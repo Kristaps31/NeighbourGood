@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "723876940597",
+    "project_id": "neighbour-good",
+    "storage_bucket": "neighbour-good.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:723876940597:android:a0dfd25846e982fb0c9a7c",
+        "android_client_info": {
+          "package_name": "com.thepixelatedposse.neighbour_good"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "723876940597-c8lrc31j72b88gf01u9pc6fc7a1t0oe8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwgd8iqIAW-XwqiSK7MEyacsdnjHbxxTE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "723876940597-c8lrc31j72b88gf01u9pc6fc7a1t0oe8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
