@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neighbour_good/login/forgotPasswordScreen.dart';
-import 'package:neighbour_good/login/home.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:neighbour_good/login/signupScreen.dart';
 import 'package:neighbour_good/screens/dashboard_screen.dart';
@@ -24,11 +23,11 @@ class _LoginScreenState extends State<LoginScreen> {
   logIn() async {
     if (_key.currentState!.validate()) {
       try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: _email.text, password: _pass.text);
+        await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: _email.text, password: _pass.text);
 
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const DashboardScreen()));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
         errorMessage = '';
       } on FirebaseException catch (e) {
         errorMessage = e.message!;
@@ -50,8 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 Text(
                   'Login',
-                  style: GoogleFonts.lato(
-                      fontWeight: FontWeight.bold, fontSize: 32),
+                  style: GoogleFonts.lato(fontWeight: FontWeight.bold, fontSize: 32),
                 ),
                 TextFormField(
                   validator: validateEmail,
@@ -72,13 +70,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
-                              visiblePassword =
-                                  visiblePassword == 'false' ? 'true' : 'false';
+                              visiblePassword = visiblePassword == 'false' ? 'true' : 'false';
                             });
                           },
-                          icon: Icon(visiblePassword == 'false'
-                              ? Icons.visibility
-                              : Icons.visibility_off),
+                          icon: Icon(
+                              visiblePassword == 'false' ? Icons.visibility : Icons.visibility_off),
                         ))),
                 const SizedBox(height: 10),
                 Center(
@@ -92,23 +88,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: GestureDetector(
                         onTap: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ForgotPass()));
+                              context, MaterialPageRoute(builder: (context) => ForgotPass()));
                         },
                         child: Text(
                           'Forget Password',
                           style: GoogleFonts.lato(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue),
+                              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue),
                         ))),
                 const SizedBox(height: 15),
                 ElevatedButton(
                     onPressed: logIn,
                     child: Text('Login',
-                        style: GoogleFonts.lato(
-                            fontSize: 18, fontWeight: FontWeight.bold))),
+                        style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.bold))),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -120,16 +111,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     GestureDetector(
                         onTap: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SignupScreen()));
+                              context, MaterialPageRoute(builder: (context) => SignupScreen()));
                         },
                         child: Text(
                           'Signup',
                           style: GoogleFonts.lato(
-                              fontSize: 16,
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold),
+                              fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold),
                         )),
                   ],
                 ),
@@ -158,8 +145,7 @@ String? validatePassword(String? formPassword) {
   if (formPassword == null || formPassword.isEmpty) {
     return 'Password address is require';
   }
-  String pattern =
-      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{6,}$';
+  String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{6,}$';
   RegExp regex = RegExp(pattern);
   if (!regex.hasMatch(formPassword)) {
     return '''
