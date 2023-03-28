@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:neighbour_good/screens/tickFeedBackScreen.dart';
 
 String categoryValue = '';
 
@@ -18,17 +19,19 @@ class _AskHelpState extends State<AskHelp> {
   final ticketDescription = TextEditingController();
 
   void submit() async {
-    User? user = FirebaseAuth.instance.currentUser;
-
     try {
-      await FirebaseFirestore.instance
-          .collection('tickets')
-          .doc(user?.uid)
-          .set({
+      User? user = FirebaseAuth.instance.currentUser;
+      await FirebaseFirestore.instance.collection('tickets').doc().set({
+        'owner_id': user?.uid,
         'Title': ticketTitle.text,
         'Category': categoryValue,
         'Description': ticketDescription.text,
+        'created_at': user?.metadata.creationTime,
+        'type': 'help',
       });
+
+      // Navigator.pushReplacement(context,
+      //     MaterialPageRoute(builder: (context) => const TicketFeedBack()));
     } on FirebaseException catch (e) {
       debugPrint(e.message);
     }
@@ -37,17 +40,17 @@ class _AskHelpState extends State<AskHelp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Ask for help')),
+        appBar: AppBar(title: const Text('Ask for help')),
         body: Form(
           child: Center(
             child: Column(
               // mainAxisAlignment: MainAxisAlignment.center,
 
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 40,
                 ),
-                Text(
+                const Text(
                   'Request title',
                   style: TextStyle(fontSize: 30),
                 ),
@@ -57,6 +60,7 @@ class _AskHelpState extends State<AskHelp> {
                   child: TextFormField(
                     controller: ticketTitle,
                     decoration: const InputDecoration(
+                      hintText: 'Enter title',
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(width: 3, color: Colors.blue),
                       ),
@@ -65,7 +69,7 @@ class _AskHelpState extends State<AskHelp> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 const Text(
@@ -77,7 +81,7 @@ class _AskHelpState extends State<AskHelp> {
                   height: 40,
                   child: DropDown(),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 const Text('Description', style: TextStyle(fontSize: 30)),
@@ -94,7 +98,7 @@ class _AskHelpState extends State<AskHelp> {
                         borderSide: BorderSide(width: 3, color: Colors.blue)),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 ElevatedButton(onPressed: submit, child: Text('Submit'))

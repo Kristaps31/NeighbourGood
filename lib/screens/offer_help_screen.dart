@@ -13,13 +13,14 @@ class _OfferHelpState extends State<OfferHelp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(title: const Text('Ask for help')),
         body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Offer help'),
-        ],
-      ),
-    ));
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Text('Offer help'),
+            ],
+          ),
+        ));
   }
 }
