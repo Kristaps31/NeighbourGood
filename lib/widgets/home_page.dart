@@ -24,27 +24,57 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
       children: [
-        Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Welcome ${user?.email}'),
-              ElevatedButton(
-                onPressed: logout,
-                child: const Text('Logout'),
+        DefaultTabController(
+          length: 3,
+          initialIndex: 0,
+          child: Scaffold(
+            appBar: AppBar(
+              title: null,
+              bottom: const PreferredSize(
+                preferredSize: Size(double.infinity, -18),
+                child: TabBar(
+                  labelColor: Color.fromARGB(255, 10, 74, 126),
+                  unselectedLabelColor: Color.fromARGB(255, 130, 130, 130),
+                  tabs: [
+                    Padding(padding: EdgeInsets.only(top: 6, bottom: 6), child: Text('Offers')),
+                    Padding(padding: EdgeInsets.only(top: 6, bottom: 6), child: Text('Pledges')),
+                    Padding(padding: EdgeInsets.only(top: 6, bottom: 6), child: Text('My Posts')),
+                  ],
+                ),
               ),
-            ],
+            ),
+            body: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                // pages
+                Container(
+                  color: Colors.transparent,
+                  child: const Center(
+                    child: Text('Offers screen'),
+                  ),
+                ),
+                Container(color: Colors.red),
+                Container(color: Colors.yellow),
+              ],
+            ),
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            ElevatedButton(onPressed: () => {}, child: const Text("Ask For Help")),
-            const SizedBox(width: 20),
-            ElevatedButton(onPressed: () => {}, child: const Text("Offer Help"))
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(onPressed: () => {}, child: const Text("Ask For Help")),
+                  const SizedBox(width: 20),
+                  ElevatedButton(onPressed: () => {}, child: const Text("Offer Help"))
+                ],
+              ),
+            )
           ],
         )
       ],
