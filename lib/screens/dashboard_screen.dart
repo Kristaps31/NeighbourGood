@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:neighbour_good/widgets/home_page.dart';
 import 'package:neighbour_good/widgets/my_socials_page.dart';
 import 'package:neighbour_good/widgets/neighbours_page.dart';
+import 'package:neighbour_good/widgets/profile_menu_drawer.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -33,7 +34,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("NeighbourGood"),
+          automaticallyImplyLeading: false,
         ),
+        endDrawer: const ProfileMenuDrawer(),
         body: pages[_navIndexSelected],
         bottomNavigationBar: NavigationBar(destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
