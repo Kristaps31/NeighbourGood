@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:neighbour_good/login/home.dart';
+import 'package:neighbour_good/screens/dashboard_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -25,9 +26,11 @@ class _SignupScreenState extends State<SignupScreen> {
   signUp() async {
     if (_key.currentState!.validate()) {
       try {
-        UserCredential response = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: _email.text, password: _pass.text, );
+        UserCredential response =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _email.text,
+          password: _pass.text,
+        );
         User? user = response.user;
 
         await FirebaseFirestore.instance
@@ -40,7 +43,7 @@ class _SignupScreenState extends State<SignupScreen> {
           'dob': _dob.text,
         });
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()));
+            MaterialPageRoute(builder: (context) => const DashboardScreen()));
         errorMessage = '';
       } on FirebaseException catch (e) {
         if (e.code == 'email-already-in-use') {

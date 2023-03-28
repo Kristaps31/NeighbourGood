@@ -5,6 +5,7 @@ import 'package:neighbour_good/login/forgotPasswordScreen.dart';
 import 'package:neighbour_good/login/home.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:neighbour_good/login/signupScreen.dart';
+import 'package:neighbour_good/screens/dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -27,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
             email: _email.text, password: _pass.text);
 
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()));
+            MaterialPageRoute(builder: (context) => const DashboardScreen()));
         errorMessage = '';
       } on FirebaseException catch (e) {
         errorMessage = e.message!;
