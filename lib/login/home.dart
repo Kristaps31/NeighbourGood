@@ -13,11 +13,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Logout() async {
+  User? user = FirebaseAuth.instance.currentUser;
+  logout() async {
     try {
-      await FirebaseAuth.instance.signOut();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()));
     } on FirebaseAuthException catch (e) {
       print(e.toString());
     }
@@ -30,10 +31,10 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Welcome to Homepage'),
+            Text('Welcome ${user?.email}'),
             ElevatedButton(
-              onPressed: Logout,
-              child: Text('Logout'),
+              onPressed: logout,
+              child: const Text('Logout'),
             ),
           ],
         ),

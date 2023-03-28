@@ -20,13 +20,14 @@ class _LoginScreenState extends State<LoginScreen> {
   String errorMessage = '';
   String visiblePassword = 'false';
 
-  Login() async {
+  logIn() async {
     if (_key.currentState!.validate()) {
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: _email.text, password: _pass.text);
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()));
         errorMessage = '';
       } on FirebaseException catch (e) {
         errorMessage = e.message!;
@@ -74,10 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   visiblePassword == 'false' ? 'true' : 'false';
                             });
                           },
-                          icon: const Icon(Icons.visibility),
-                          color: visiblePassword == 'false'
-                              ? Colors.grey
-                              : Colors.blue,
+                          icon: Icon(visiblePassword == 'false'
+                              ? Icons.visibility
+                              : Icons.visibility_off),
                         ))),
                 const SizedBox(height: 10),
                 Center(
@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ))),
                 const SizedBox(height: 15),
                 ElevatedButton(
-                    onPressed: Login,
+                    onPressed: logIn,
                     child: Text('Login',
                         style: GoogleFonts.lato(
                             fontSize: 18, fontWeight: FontWeight.bold))),
