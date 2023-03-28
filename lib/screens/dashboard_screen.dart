@@ -13,11 +13,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   late int _navIndexSelected;
 
-  late List<Widget> pages = const [
-    HomePage(),
-    NeighboursPage(),
-    MySocialsPage()
-  ];
+  late List<Widget> pages = const [HomePage(), NeighboursPage(), MySocialsPage()];
 
   @override
   void initState() {
@@ -33,21 +29,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("NeighbourGood"),
+    return WillPopScope(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("NeighbourGood"),
+        ),
+        body: pages[_navIndexSelected],
+        bottomNavigationBar: NavigationBar(destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.people), label: 'Neighbours'),
+          NavigationDestination(icon: Icon(Icons.message), label: 'My Socials'),
+        ], selectedIndex: _navIndexSelected, onDestinationSelected: _onPageChangedHandler),
       ),
-      body: pages[_navIndexSelected],
-      bottomNavigationBar: NavigationBar(
-          destinations: const [
-            NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-            NavigationDestination(
-                icon: Icon(Icons.people), label: 'Neighbours'),
-            NavigationDestination(
-                icon: Icon(Icons.message), label: 'My Socials'),
-          ],
-          selectedIndex: _navIndexSelected,
-          onDestinationSelected: _onPageChangedHandler),
+      onWillPop: () async => false,
     );
   }
 }
