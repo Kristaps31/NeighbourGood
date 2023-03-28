@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:neighbour_good/screens/ask_help_screen.dart';
+import 'package:neighbour_good/screens/offer_help_screen.dart';
 
 import '../login/loginScreen.dart';
 
@@ -15,8 +17,8 @@ class _HomePageState extends State<HomePage> {
   logout() async {
     try {
       FirebaseAuth.instance.signOut();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()));
     } on FirebaseAuthException catch (e) {
       print(e.toString());
     }
@@ -42,9 +44,23 @@ class _HomePageState extends State<HomePage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(onPressed: () => {}, child: const Text("Ask For Help")),
+            ElevatedButton(
+                onPressed: () => {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AskHelp()))
+                    },
+                child: const Text("Ask For Help")),
             const SizedBox(width: 20),
-            ElevatedButton(onPressed: () => {}, child: const Text("Offer Help"))
+            ElevatedButton(
+                onPressed: () => {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const OfferHelp()))
+                    },
+                child: const Text("Offer Help"))
           ],
         )
       ],
