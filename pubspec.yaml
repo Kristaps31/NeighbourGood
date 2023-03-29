@@ -13,6 +13,8 @@ dependencies:
   google_fonts: ^4.0.3
   flutter:
     sdk: flutter
+  image_picker: ^0.8.7+1
+  firebase_storage: ^11.0.16
 
 dev_dependencies:
   flutter_test:
@@ -21,3 +23,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/blank-profile-picture-g0d85654dd_640.png
