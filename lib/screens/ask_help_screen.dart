@@ -30,8 +30,8 @@ class _AskHelpState extends State<AskHelp> {
         'type': 'help',
       });
 
-      // Navigator.pushReplacement(context,
-      //     MaterialPageRoute(builder: (context) => const TicketFeedBack()));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const TicketFeedBack()));
     } on FirebaseException catch (e) {
       debugPrint(e.message);
     }
