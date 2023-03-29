@@ -14,7 +14,8 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   late int _navIndexSelected;
 
-  late List<Widget> pages = const [HomePage(), NeighboursPage(), MySocialsPage()];
+  List<Widget> pages = const [HomePage(), NeighboursPage(), MySocialsPage()];
+  List<String> titles = ["NeighbourGood", "Neighbours", "Messages"];
 
   @override
   void initState() {
@@ -33,7 +34,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return WillPopScope(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("NeighbourGood"),
+          title: Text(titles[_navIndexSelected]),
+          elevation: _navIndexSelected == 0 ? 0 : 2,
           automaticallyImplyLeading: false,
         ),
         endDrawer: const ProfileMenuDrawer(),

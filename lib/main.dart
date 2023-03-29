@@ -27,6 +27,8 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(useMaterial3: true),
+      debugShowCheckedModeBanner: false,
       initialRoute: _initialRoute,
       routes: {
         '/login': (context) => const LoginScreen(),
