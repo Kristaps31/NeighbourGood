@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:neighbour_good/login/loginScreen.dart';
+import 'package:neighbour_good/login/signupScreen.dart';
 
 class ForgotPass extends StatefulWidget {
   const ForgotPass({Key? key}) : super(key: key);
@@ -104,16 +105,4 @@ class _ForgetPassState extends State<ForgotPass> {
       ),
     );
   }
-}
-
-String? validateEmail(String? formEmail) {
-  if (formEmail == null || formEmail.isEmpty) {
-    return 'Email address is require';
-  }
-  String pattern = r'\w+@\w+\.\w+';
-  RegExp regex = RegExp(pattern);
-  if (!regex.hasMatch(formEmail)) {
-    return 'Invalid Email Address Format';
-  }
-  return null;
 }
