@@ -38,7 +38,7 @@ class _PostsListPageState extends State<PostsListPage> {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: FirebaseFirestore.instance
           .collection('tickets')
-          // .orderBy('created_at')
+          .orderBy('created_at', descending: true)
           .where(typeField, isEqualTo: equalTo)
           .snapshots(),
       builder: (context, snapshot) {
