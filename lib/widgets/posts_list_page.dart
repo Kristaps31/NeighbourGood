@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:neighbour_good/models/ticket.dart';
+import 'package:neighbour_good/widgets/ticket_Card.dart';
 
 class PostsListPage extends StatefulWidget {
   final String type;
@@ -46,22 +48,28 @@ class _PostsListPageState extends State<PostsListPage> {
 
         if (snapshot.hasData) {
           final docs = snapshot.data!.docs;
-          return ListView.builder(
-              padding: const EdgeInsets.only(bottom: 70),
-              itemCount: docs.length,
-              itemBuilder: (context, index) {
-                final data = docs[index].data();
-                if (data["title"] != null) {
-                  return ListTile(
-                    onTap: () {
-                      debugPrint(docs[index].id);
-                    },
-                    title: Text(data["title"] ?? ''),
+          return Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: ListView.builder(
+                padding: const EdgeInsets.only(bottom: 70),
+                itemCount: docs.length,
+                itemBuilder: (context, index) {
+                  final data = docs[index].data();
+                  Ticket ticket = Ticket(
+                      id: docs[index].id,
+                      category: data['category'],
+                      createdAt: data['created_at'],
+                      description: data['description'],
+                      ownerId: data['owner_id'],
+                      isOpen: data['is_opened'] ?? true,
+                      title: data['title'],
+                      type: data['type']);
+
+                  return TicketCard(
+                    ticket: ticket,
                   );
-                } else {
-                  return null;
-                }
-              });
+                }),
+          );
         }
         return const Center(child: CircularProgressIndicator());
       },

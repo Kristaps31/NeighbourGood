@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:neighbour_good/utils/form_validation.dart';
 import 'package:neighbour_good/widgets/dropdown_category.dart';
 
@@ -118,14 +119,14 @@ class _NewTicketScreenState extends State<NewTicketScreen> {
                   child: Column(
                     children: [
                       TextFormField(
-                        controller: ticketTitle,
-                        decoration: const InputDecoration(
-                          label: Text('Title'),
-                          border: OutlineInputBorder(),
-                          hintText: 'Enter title',
-                        ),
-                        validator: validateNotEmpty,
-                      ),
+                          controller: ticketTitle,
+                          decoration: const InputDecoration(
+                            label: Text('Title'),
+                            border: OutlineInputBorder(),
+                            hintText: 'Enter title',
+                          ),
+                          validator: validateNotEmpty,
+                          maxLength: 30),
                       SizedBox(
                         child: DropDownCategory(
                           category: _categoryName,
