@@ -21,11 +21,11 @@ class _PostsListPageState extends State<PostsListPage> {
 
     if (widget.type == 'offers') {
       typeField = 'type';
-      equalTo = 'help';
+      equalTo = 'offer';
     }
     if (widget.type == 'pledges') {
       typeField = 'type';
-      equalTo = 'offer';
+      equalTo = 'help';
     }
     if (widget.type == 'my_posts') {
       typeField = 'owner_id';
@@ -38,6 +38,7 @@ class _PostsListPageState extends State<PostsListPage> {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: FirebaseFirestore.instance
           .collection('tickets')
+          // .orderBy('created_at')
           .where(typeField, isEqualTo: equalTo)
           .snapshots(),
       builder: (context, snapshot) {
@@ -46,6 +47,7 @@ class _PostsListPageState extends State<PostsListPage> {
         if (snapshot.hasData) {
           final docs = snapshot.data!.docs;
           return ListView.builder(
+              padding: const EdgeInsets.only(bottom: 70),
               itemCount: docs.length,
               itemBuilder: (context, index) {
                 final data = docs[index].data();
