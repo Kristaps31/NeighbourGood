@@ -12,9 +12,11 @@ dependencies:
   firebase_core: ^2.8.0
   google_fonts: ^4.0.3
   flutter:
-    sdk: flutter
+  sdk: flutter
+  jiffy: ^5.0.0
   image_picker: ^0.8.7+1
   firebase_storage: ^11.0.16
+
 
 dev_dependencies:
   flutter_test:

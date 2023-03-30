@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:neighbour_good/utils/form_validation.dart';
 import 'package:neighbour_good/widgets/dropdown_category.dart';
 
 class NewTicketScreen extends StatefulWidget {
@@ -15,6 +17,7 @@ class NewTicketScreen extends StatefulWidget {
 class _NewTicketScreenState extends State<NewTicketScreen> {
   final ticketTitle = TextEditingController();
   final ticketDescription = TextEditingController();
+  final formKey = GlobalKey<FormState>();
   late String _categoryName;
   late List<String> _categories = ['Shopping'];
 
@@ -41,7 +44,11 @@ class _NewTicketScreenState extends State<NewTicketScreen> {
 
   void getCategories() async {
     try {
-      await FirebaseFirestore.instance.collection("categories").orderBy('order').get().then(
+      await FirebaseFirestore.instance
+          .collection("categories")
+          .orderBy('order')
+          .get()
+          .then(
         (querySnapshot) {
           String firstCategory = querySnapshot.docs[0].data()['name'] ?? 'DIY';
           setInitialCategory(firstCategory);
@@ -60,6 +67,9 @@ class _NewTicketScreenState extends State<NewTicketScreen> {
   }
 
   void submit() async {
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
     try {
       User? user = FirebaseAuth.instance.currentUser;
       await FirebaseFirestore.instance.collection('tickets').doc().set({
@@ -90,7 +100,8 @@ class _NewTicketScreenState extends State<NewTicketScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(widget.type == 'help' ? 'Ask for help' : 'Offer help')),
+        appBar: AppBar(
+            title: Text(widget.type == 'help' ? 'Ask for help' : 'Offer help')),
         body: GestureDetector(
           onTap: () {
             FocusScopeNode currentFocus = FocusScope.of(context);
@@ -103,17 +114,19 @@ class _NewTicketScreenState extends State<NewTicketScreen> {
             child: Padding(
               padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
               child: Form(
+                key: formKey,
                 child: Center(
                   child: Column(
                     children: [
                       TextFormField(
-                        controller: ticketTitle,
-                        decoration: const InputDecoration(
-                          label: Text('Title'),
-                          border: OutlineInputBorder(),
-                          hintText: 'Enter title',
-                        ),
-                      ),
+                          controller: ticketTitle,
+                          decoration: const InputDecoration(
+                            label: Text('Title'),
+                            border: OutlineInputBorder(),
+                            hintText: 'Enter title',
+                          ),
+                          validator: validateNotEmpty,
+                          maxLength: 30),
                       SizedBox(
                         child: DropDownCategory(
                           category: _categoryName,
@@ -133,11 +146,13 @@ class _NewTicketScreenState extends State<NewTicketScreen> {
                           border: OutlineInputBorder(),
                           hintText: 'Enter description',
                         ),
+                        validator: validateNotEmpty,
                       ),
                       const SizedBox(
                         height: 20,
                       ),
-                      ElevatedButton(onPressed: submit, child: const Text('Submit')),
+                      ElevatedButton(
+                          onPressed: submit, child: const Text('Submit')),
                       const SizedBox(
                         height: 20,
                       ),

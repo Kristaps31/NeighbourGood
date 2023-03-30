@@ -48,7 +48,9 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Welcome Back',
+
+                  'Login',
+
                   style: GoogleFonts.lato(
                       fontWeight: FontWeight.bold, fontSize: 32),
                 ),
@@ -141,30 +143,3 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-String? validateEmail(String? formEmail) {
-  if (formEmail == null || formEmail.isEmpty) {
-    return 'Email address is require';
-  }
-  String pattern = r'\w+@\w+\.\w+';
-  RegExp regex = RegExp(pattern);
-  if (!regex.hasMatch(formEmail)) {
-    return 'Invalid Email Address Format';
-  }
-  return null;
-}
-
-String? validatePassword(String? formPassword) {
-  if (formPassword == null || formPassword.isEmpty) {
-    return 'Password address is require';
-  }
-  String pattern =
-      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{6,}$';
-  RegExp regex = RegExp(pattern);
-  if (!regex.hasMatch(formPassword)) {
-    return '''
-      Password must be at least 6 characters,
-      include an uppercase letter, number and symbol.
-      ''';
-  }
-  return null;
-}
