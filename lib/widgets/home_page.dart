@@ -4,6 +4,7 @@ import 'package:neighbour_good/screens/new_ticket_screen.dart';
 import 'package:neighbour_good/widgets/posts_list_page.dart';
 
 import '../login/loginScreen.dart';
+import 'fancy_fab.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,8 +18,8 @@ class _HomePageState extends State<HomePage> {
   logout() async {
     try {
       FirebaseAuth.instance.signOut();
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const LoginScreen()));
     } on FirebaseAuthException catch (e) {
       print(e.toString());
     }
@@ -32,6 +33,10 @@ class _HomePageState extends State<HomePage> {
           length: 3,
           initialIndex: 0,
           child: Scaffold(
+            floatingActionButton: FabWithIcons(
+              icons: const [Icons.chat_rounded, Icons.waving_hand],
+              onIconTapped: (index) {},
+            ),
             appBar: AppBar(
               title: null,
               bottom: const PreferredSize(
@@ -40,20 +45,14 @@ class _HomePageState extends State<HomePage> {
                   labelColor: Color.fromARGB(255, 10, 74, 126),
                   unselectedLabelColor: Color.fromARGB(255, 130, 130, 130),
                   tabs: [
-                    Padding(
-                        padding: EdgeInsets.only(top: 6, bottom: 6),
-                        child: Text('Offers')),
-                    Padding(
-                        padding: EdgeInsets.only(top: 6, bottom: 6),
-                        child: Text('Pledges')),
-                    Padding(
-                        padding: EdgeInsets.only(top: 6, bottom: 6),
-                        child: Text('My Posts')),
+                    Padding(padding: EdgeInsets.only(top: 6, bottom: 6), child: Text('Offers')),
+                    Padding(padding: EdgeInsets.only(top: 6, bottom: 6), child: Text('Pledges')),
+                    Padding(padding: EdgeInsets.only(top: 6, bottom: 6), child: Text('My Posts')),
                   ],
                 ),
               ),
             ),
-            body: const TabBarView(
+            body: TabBarView(
               children: [
                 // pages
                 PostsListPage(type: "offers"),
@@ -63,39 +62,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      onPressed: () => {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const NewTicketScreen()))
-                          },
-                      child: const Text("Ask For Help")),
-                  const SizedBox(width: 20),
-                  ElevatedButton(
-                      onPressed: () => {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const NewTicketScreen(
-                                          type: 'offer',
-                                        )))
-                          },
-                      child: const Text("Offer Help"))
-                ],
-              ),
-            )
-          ],
-        )
+        //
       ],
     );
   }

@@ -2,41 +2,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:neighbour_good/models/ticket.dart';
-import 'package:neighbour_good/widgets/ticket_Card.dart';
+import 'package:neighbour_good/models/user.dart';
+import 'package:neighbour_good/widgets/ticket_card.dart';
 
-class PostsListPage extends StatefulWidget {
+class PostsListPage extends StatelessWidget {
   final String type;
 
   const PostsListPage({Key? key, required this.type}) : super(key: key);
 
   @override
-  State<PostsListPage> createState() => _PostsListPageState();
-}
+  Widget build(BuildContext context) {
+    String typeField = '';
+    String equalTo = '';
 
-class _PostsListPageState extends State<PostsListPage> {
-  String typeField = '';
-  String equalTo = '';
-
-  @override
-  void initState() {
-    super.initState();
-
-    if (widget.type == 'offers') {
+    if (type == 'offers') {
       typeField = 'type';
       equalTo = 'offer';
     }
-    if (widget.type == 'pledges') {
+    if (type == 'pledges') {
       typeField = 'type';
       equalTo = 'help';
     }
-    if (widget.type == 'my_posts') {
+    if (type == 'my_posts') {
       typeField = 'owner_id';
       equalTo = FirebaseAuth.instance.currentUser?.uid ?? '';
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: FirebaseFirestore.instance
           .collection('tickets')
@@ -48,28 +39,34 @@ class _PostsListPageState extends State<PostsListPage> {
 
         if (snapshot.hasData) {
           final docs = snapshot.data!.docs;
-          return Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: ListView.builder(
-                padding: const EdgeInsets.only(bottom: 70),
-                itemCount: docs.length,
-                itemBuilder: (context, index) {
-                  final data = docs[index].data();
-                  Ticket ticket = Ticket(
-                      id: docs[index].id,
-                      category: data['category'],
-                      createdAt: data['created_at'],
-                      description: data['description'],
-                      ownerId: data['owner_id'],
-                      isOpen: data['is_opened'] ?? true,
-                      title: data['title'],
-                      type: data['type']);
+          final data = docs[0];
+          Ticket prototypeTicket = Ticket.fromFirestore(data);
 
-                  return TicketCard(
-                    ticket: ticket,
-                  );
-                }),
-          );
+          return ListView.builder(
+              padding: const EdgeInsets.only(bottom: 70, top: 12),
+              itemCount: docs.length,
+              prototypeItem: TicketCard(
+                user: UserModel.empty(),
+                ticket: prototypeTicket,
+              ),
+              itemBuilder: (context, index) {
+                final data = docs[index];
+                Ticket ticket = Ticket.fromFirestore(data);
+
+                return FutureBuilder<UserModel>(
+                  future: UserModel.loadUserDetails(ticket.ownerId),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return TicketCard(
+                        ticket: ticket,
+                        user: snapshot.data!,
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
+                );
+              });
         }
         return const Center(child: CircularProgressIndicator());
       },

@@ -21,7 +21,7 @@ class NeighboursPage extends StatelessWidget {
                     onTap: () {
                       debugPrint(docs[index].id);
                     },
-                    title: Text(data["name"]),
+                    title: Text(data["name"] ?? ''),
                   );
                 });
           }
