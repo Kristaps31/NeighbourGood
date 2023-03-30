@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:neighbour_good/profile/createProfile.dart';
 
 class MyProfileScreen extends StatelessWidget {
   const MyProfileScreen({super.key});
@@ -9,6 +11,6 @@ class MyProfileScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text('My profile'),
         ),
-        body: Text('My profile details'));
+        body: CreateProfile());
   }
 }

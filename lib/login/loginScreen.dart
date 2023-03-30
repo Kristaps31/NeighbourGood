@@ -48,7 +48,9 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
+
                   'Login',
+
                   style: GoogleFonts.lato(
                       fontWeight: FontWeight.bold, fontSize: 32),
                 ),
@@ -140,3 +142,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+

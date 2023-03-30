@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neighbour_good/screens/my_profile_screen.dart';
+import 'package:neighbour_good/profile/createProfile.dart';
 
 import '../login/loginScreen.dart';
 
@@ -18,8 +19,8 @@ class _ProfileMenuDrawerState extends State<ProfileMenuDrawer> {
   void logout() async {
     try {
       FirebaseAuth.instance.signOut();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()));
     } on FirebaseAuthException catch (e) {
       debugPrint(e.toString());
     }
@@ -37,16 +38,21 @@ class _ProfileMenuDrawerState extends State<ProfileMenuDrawer> {
             decoration: BoxDecoration(color: Colors.blue),
             child: Text(
               'Profile Menu',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18),
             ),
           ),
         ),
         ListTile(
-          title: const Text('My profile'),
+          title: GestureDetector(child: const Text('My profile')),
           onTap: () {
             Navigator.pop(context);
             Navigator.push(
-                context, CupertinoPageRoute(builder: (context) => const MyProfileScreen()));
+                context,
+                CupertinoPageRoute(
+                    builder: (context) => const MyProfileScreen()));
           },
         ),
         ListTile(
