@@ -38,7 +38,7 @@ class TicketComment extends StatelessWidget {
                       color: Color.fromARGB(255, 249, 240, 240),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 6, bottom: 6, left: 10, right: 10),
+                      padding: const EdgeInsets.only(top: 6, bottom: 6, left: 8, right: 8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

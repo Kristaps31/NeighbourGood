@@ -99,11 +99,11 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                             hintText: 'Type your comment...',
                             hintStyle: const TextStyle(
                                 fontSize: 15, fontWeight: FontWeight.w400, color: Colors.grey),
-                            contentPadding: const EdgeInsets.all(6),
+                            contentPadding: const EdgeInsets.all(10),
                             filled: true,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(24),
                               borderSide: const BorderSide(
                                 width: 1.0, // Change this value to adjust the border width
                                 color: Color.fromARGB(255, 235, 235, 235),
