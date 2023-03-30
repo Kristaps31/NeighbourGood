@@ -22,9 +22,8 @@ class _CreateProfileState extends State<CreateProfile> {
   String street = '';
   String img = '';
   String displayUrl = '';
-  Future addImg() async {}
+  String display = '';
   _getData() async {
-    debugPrint(displayUrl);
     try {
       await FirebaseFirestore.instance
           .collection('profiles')
@@ -57,6 +56,7 @@ class _CreateProfileState extends State<CreateProfile> {
 
       setState(() {
         displayUrl = imgUrl;
+        display = 'show';
       });
       debugPrint(imgUrl);
     } catch (e) {
@@ -87,7 +87,7 @@ class _CreateProfileState extends State<CreateProfile> {
                   label: const Text('change'),
                 )
               ])),
-          displayUrl != ''
+          display != ''
               ? ElevatedButton(
                   onPressed: () async {
                     await FirebaseFirestore.instance
@@ -95,7 +95,7 @@ class _CreateProfileState extends State<CreateProfile> {
                         .doc(FirebaseAuth.instance.currentUser?.uid)
                         .update({'img': displayUrl});
                     setState(() {
-                      displayUrl = '';
+                      display = '';
                     });
                   },
                   child: const Text('save to cloud'),
