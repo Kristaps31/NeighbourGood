@@ -121,7 +121,28 @@ class TicketCard extends StatelessWidget {
                                   child: TextButton(
                                       style: TextButton.styleFrom(padding: EdgeInsets.zero),
                                       onPressed: () {
-                                        ticket.removeTicket(parentContext);
+                                        showDialog(
+                                            context: parentContext,
+                                            builder: (context) => AlertDialog(
+                                                  title: const Text("Confirm"),
+                                                  content: Text(
+                                                      "Are you sure you would like to delete ${ticket.title} post?"),
+                                                  actions: [
+                                                    TextButton(
+                                                      child: const Text("Cancel"),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                    TextButton(
+                                                      child: const Text("Yes"),
+                                                      onPressed: () {
+                                                        ticket.removeTicket(parentContext);
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ],
+                                                ));
                                       },
                                       child: const Icon(
                                         Icons.delete_forever,

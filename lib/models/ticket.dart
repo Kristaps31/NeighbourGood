@@ -49,6 +49,5 @@ class Ticket {
                 content: Text("Something went wrong!"),
               ))
             });
-    ;
   }
 }
