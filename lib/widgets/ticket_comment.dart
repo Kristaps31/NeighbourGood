@@ -25,48 +25,50 @@ class TicketComment extends StatelessWidget {
               padding: const EdgeInsets.only(right: 10.0),
               child: CircleAvatar(backgroundImage: NetworkImage(user.profileImgUrl)),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(10),
-                        topRight: Radius.circular(10),
-                        bottomRight: Radius.circular(10)),
-                    color: Color.fromARGB(255, 249, 240, 240),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 4, left: 10, right: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          user.name,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                          bottomRight: Radius.circular(10)),
+                      color: Color.fromARGB(255, 249, 240, 240),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 6, bottom: 6, left: 10, right: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            user.name,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ),
-                        Text(
-                          comment.message,
-                          style: const TextStyle(fontSize: 15),
-                        ),
-                      ],
+                          Text(
+                            comment.message,
+                            style: const TextStyle(fontSize: 15),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(
-                  height: 0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Text(
-                    Jiffy(comment.createdAt.toDate()).fromNow(),
-                    style: const TextStyle(color: Color.fromARGB(255, 80, 80, 80), fontSize: 13),
+                  const SizedBox(
+                    height: 0,
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: Text(
+                      Jiffy(comment.createdAt.toDate()).fromNow(),
+                      style: const TextStyle(color: Color.fromARGB(255, 80, 80, 80), fontSize: 13),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ));

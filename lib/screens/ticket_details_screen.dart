@@ -38,10 +38,10 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
             senderId: FirebaseAuth.instance.currentUser != null
                 ? FirebaseAuth.instance.currentUser!.uid
                 : '',
-            message: _messageController.text)
+            message: _messageController.text.trim())
         .addComment(widget.ticket.id)
         .then((value) {
-      _messageController.text = '';
+      _messageController.clear();
       FocusScope.of(context).unfocus();
     }).catchError((value) {
       ScaffoldMessenger.of(context)
@@ -93,7 +93,8 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                         Expanded(
                             child: TextFormField(
                           controller: _messageController,
-                          maxLines: null,
+                          maxLines: 4,
+                          minLines: 1,
                           decoration: InputDecoration(
                             hintText: 'Type your comment...',
                             hintStyle: const TextStyle(

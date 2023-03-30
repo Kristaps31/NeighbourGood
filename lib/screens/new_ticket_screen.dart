@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:neighbour_good/utils/form_validation.dart';
 import 'package:neighbour_good/widgets/dropdown_category.dart';
 
@@ -44,11 +43,7 @@ class _NewTicketScreenState extends State<NewTicketScreen> {
 
   void getCategories() async {
     try {
-      await FirebaseFirestore.instance
-          .collection("categories")
-          .orderBy('order')
-          .get()
-          .then(
+      await FirebaseFirestore.instance.collection("categories").orderBy('order').get().then(
         (querySnapshot) {
           String firstCategory = querySnapshot.docs[0].data()['name'] ?? 'DIY';
           setInitialCategory(firstCategory);
@@ -74,9 +69,9 @@ class _NewTicketScreenState extends State<NewTicketScreen> {
       User? user = FirebaseAuth.instance.currentUser;
       await FirebaseFirestore.instance.collection('tickets').doc().set({
         'owner_id': user?.uid,
-        'title': ticketTitle.text,
+        'title': ticketTitle.text.trim(),
         'category': _categoryName,
-        'description': ticketDescription.text,
+        'description': ticketDescription.text.trim(),
         'is_opened': true,
         'created_at': DateTime.now().toUtc(),
         'type': widget.type,
@@ -100,8 +95,7 @@ class _NewTicketScreenState extends State<NewTicketScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: Text(widget.type == 'help' ? 'Ask for help' : 'Offer help')),
+        appBar: AppBar(title: Text(widget.type == 'help' ? 'Ask for help' : 'Offer help')),
         body: GestureDetector(
           onTap: () {
             FocusScopeNode currentFocus = FocusScope.of(context);
@@ -151,8 +145,7 @@ class _NewTicketScreenState extends State<NewTicketScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      ElevatedButton(
-                          onPressed: submit, child: const Text('Submit')),
+                      ElevatedButton(onPressed: submit, child: const Text('Submit')),
                       const SizedBox(
                         height: 20,
                       ),
