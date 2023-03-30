@@ -44,36 +44,32 @@ class PostsListPage extends StatelessWidget {
         if (snapshot.hasData) {
           final docs = snapshot.data!.docs;
 
-          return Stack(
-            children: [
-              Visibility(
-                visible: docs.isEmpty ? false : true,
-                child: ListView.builder(
-                    padding: const EdgeInsets.only(bottom: 70, top: 12),
-                    itemCount: docs.length,
-                    itemBuilder: (context, index) {
-                      final data = docs[index];
-                      Ticket ticket = Ticket.fromFirestore(data);
+          if (docs.isEmpty) {
+            return Center(child: Text(emptyListMessage));
+          }
 
-                      return FutureBuilder<UserModel>(
-                        future: UserModel.loadUserDetails(ticket.ownerId),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return TicketCard(
-                              ticket: ticket,
-                              user: snapshot.data!,
-                              parentContext: parentContext,
-                            );
-                          } else {
-                            return Container();
-                          }
-                        },
+          return ListView.builder(
+              padding: const EdgeInsets.only(bottom: 70, top: 12),
+              itemCount: docs.length,
+              itemBuilder: (context, index) {
+                final data = docs[index];
+                Ticket ticket = Ticket.fromFirestore(data);
+
+                return FutureBuilder<UserModel>(
+                  future: UserModel.loadUserDetails(ticket.ownerId),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return TicketCard(
+                        ticket: ticket,
+                        user: snapshot.data!,
+                        parentContext: parentContext,
                       );
-                    }),
-              ),
-              docs.isEmpty ? Center(child: Text(emptyListMessage)) : Container()
-            ],
-          );
+                    } else {
+                      return Container();
+                    }
+                  },
+                );
+              });
         }
         return const Center(child: CircularProgressIndicator());
       },

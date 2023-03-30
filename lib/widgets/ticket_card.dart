@@ -119,21 +119,7 @@ class TicketCard extends StatelessWidget {
                                 child: TextButton(
                                     style: TextButton.styleFrom(padding: EdgeInsets.zero),
                                     onPressed: () {
-                                      ticket
-                                          .removeTicket()
-                                          .then((value) => {
-                                                ScaffoldMessenger.of(parentContext)
-                                                    .showSnackBar(SnackBar(
-                                                  content: Text(
-                                                      "Your ${ticket.type} has been successfully deleted!"),
-                                                ))
-                                              })
-                                          .catchError((e) => {
-                                                ScaffoldMessenger.of(parentContext)
-                                                    .showSnackBar(const SnackBar(
-                                                  content: Text("Something went wrong!"),
-                                                ))
-                                              });
+                                      ticket.removeTicket(parentContext);
                                     },
                                     child: const Icon(
                                       Icons.delete_forever,
