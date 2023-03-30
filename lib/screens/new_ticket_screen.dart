@@ -44,11 +44,7 @@ class _NewTicketScreenState extends State<NewTicketScreen> {
 
   void getCategories() async {
     try {
-      await FirebaseFirestore.instance
-          .collection("categories")
-          .orderBy('order')
-          .get()
-          .then(
+      await FirebaseFirestore.instance.collection("categories").orderBy('order').get().then(
         (querySnapshot) {
           String firstCategory = querySnapshot.docs[0].data()['name'] ?? 'DIY';
           setInitialCategory(firstCategory);
@@ -100,8 +96,7 @@ class _NewTicketScreenState extends State<NewTicketScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: Text(widget.type == 'help' ? 'Ask for help' : 'Offer help')),
+        appBar: AppBar(title: Text(widget.type == 'help' ? 'Request Help' : 'Offer Help')),
         body: GestureDetector(
           onTap: () {
             FocusScopeNode currentFocus = FocusScope.of(context);
@@ -151,8 +146,7 @@ class _NewTicketScreenState extends State<NewTicketScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      ElevatedButton(
-                          onPressed: submit, child: const Text('Submit')),
+                      ElevatedButton(onPressed: submit, child: const Text('Submit')),
                       const SizedBox(
                         height: 20,
                       ),
