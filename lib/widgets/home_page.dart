@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:neighbour_good/screens/new_ticket_screen.dart';
 import 'package:neighbour_good/widgets/posts_list_page.dart';
 
 import '../login/loginScreen.dart';
@@ -21,7 +20,7 @@ class _HomePageState extends State<HomePage> {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => const LoginScreen()));
     } on FirebaseAuthException catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
   }
 
@@ -52,7 +51,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            body: TabBarView(
+            body: const TabBarView(
               children: [
                 // pages
                 PostsListPage(type: "offers"),
