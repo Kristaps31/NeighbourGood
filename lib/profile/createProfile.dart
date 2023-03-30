@@ -77,10 +77,8 @@ class _CreateProfileState extends State<CreateProfile> {
         child: Column(children: [
           CircleAvatar(
               radius: 80,
-              backgroundImage:
-                  NetworkImage(displayUrl == '' ? img : displayUrl),
-              child:
-                  Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+              backgroundImage: NetworkImage(displayUrl == '' ? img : displayUrl),
+              child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
                 ElevatedButton.icon(
                   onPressed: submit,
                   icon: const Icon(Icons.edit),
