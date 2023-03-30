@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 class FabWithIcons extends StatefulWidget {
-  const FabWithIcons({super.key, required this.icons, required this.onIconTapped});
+  const FabWithIcons(
+      {super.key, required this.icons, required this.onIconTapped, required this.labels});
   final List<IconData> icons;
   final ValueChanged<int> onIconTapped;
+  final List<String> labels;
+
   @override
   State createState() => FabWithIconsState();
 }
@@ -49,7 +52,7 @@ class FabWithIconsState extends State<FabWithIcons> with TickerProviderStateMixi
         child: FloatingActionButton.extended(
           heroTag: 'addButtonOnHomeScreen$index',
           backgroundColor: backgroundColor,
-          label: const Text('Help'),
+          label: Text(widget.labels[index]),
           icon: Icon(widget.icons[index], color: foregroundColor),
           onPressed: () => _onTapped(index),
         ),

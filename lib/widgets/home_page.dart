@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:neighbour_good/screens/new_ticket_screen.dart';
 import 'package:neighbour_good/widgets/posts_list_page.dart';
 
 import '../login/loginScreen.dart';
@@ -34,7 +35,13 @@ class _HomePageState extends State<HomePage> {
           child: Scaffold(
             floatingActionButton: FabWithIcons(
               icons: const [Icons.chat_rounded, Icons.waving_hand],
-              onIconTapped: (index) {},
+              labels: const ["Ask For Help", "Offer Help"],
+              onIconTapped: (index) {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => NewTicketScreen(
+                          type: index == 1 ? 'offer' : 'help',
+                        )));
+              },
             ),
             appBar: AppBar(
               title: null,
