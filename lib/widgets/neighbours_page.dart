@@ -46,7 +46,7 @@ void initState() {
                                       created_at: data['created_at'] ?? "Not available",
                                   ))));
                     },
-                    title: Text(data["name"]),
+                    title: Text(data["name"] ?? ''),
                   );
                 });
           }
