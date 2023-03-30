@@ -32,4 +32,8 @@ class Ticket {
         title: data['title'],
         type: data['type']);
   }
+
+  Future<void> removeTicket() {
+    return FirebaseFirestore.instance.collection('tickets').doc(id).delete();
+  }
 }

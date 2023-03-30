@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:neighbour_good/models/ticket.dart';
@@ -5,9 +6,12 @@ import 'package:neighbour_good/models/ticket.dart';
 import '../models/user.dart';
 
 class TicketCard extends StatelessWidget {
-  const TicketCard({Key? key, required this.ticket, required this.user}) : super(key: key);
+  const TicketCard(
+      {Key? key, required this.ticket, required this.user, required this.parentContext})
+      : super(key: key);
   final Ticket ticket;
   final UserModel user;
+  final BuildContext parentContext;
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +109,41 @@ class TicketCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontSize: 15),
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ticket.ownerId == FirebaseAuth.instance.currentUser!.uid
+                            ? SizedBox(
+                                height: 20,
+                                width: 30,
+                                child: TextButton(
+                                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                                    onPressed: () {
+                                      ticket
+                                          .removeTicket()
+                                          .then((value) => {
+                                                ScaffoldMessenger.of(parentContext)
+                                                    .showSnackBar(SnackBar(
+                                                  content: Text(
+                                                      "Your ${ticket.type} has been successfully deleted!"),
+                                                ))
+                                              })
+                                          .catchError((e) => {
+                                                ScaffoldMessenger.of(parentContext)
+                                                    .showSnackBar(const SnackBar(
+                                                  content: Text("Something went wrong!"),
+                                                ))
+                                              });
+                                    },
+                                    child: const Icon(
+                                      Icons.delete_forever,
+                                      color: Colors.red,
+                                      size: 25,
+                                    )),
+                              )
+                            : Container(),
+                      ],
+                    )
                   ],
                 ),
               ),
