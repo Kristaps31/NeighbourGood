@@ -3,11 +3,26 @@ import 'package:flutter/material.dart';
 import '/models/user.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
+import '/models/upVoteUser.dart';
 
-class UserScreen extends StatelessWidget {
+class UserScreen extends StatefulWidget {
   final User user;
 
   const UserScreen({Key? key, required this.user}) : super(key: key);
+
+  @override
+  _UserScreenState createState() => _UserScreenState();
+}
+
+class _UserScreenState extends State<UserScreen> {
+late User _user;
+
+@override
+ void initState() {
+  super.initState();
+  _user = widget.user;
+ }
+
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +42,7 @@ class UserScreen extends StatelessWidget {
                       // ignore: prefer_const_constructors
 
                       child: CircleAvatar(
-                        backgroundImage: NetworkImage(user.img),
+                        backgroundImage: NetworkImage(widget.user.img),
                       ),
                     ),
                   ),
@@ -37,14 +52,14 @@ class UserScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      user.name,
+                      widget.user.name,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 2.0),
                       child: Text(
-                        user.street,
+                        widget.user.street,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -52,7 +67,7 @@ class UserScreen extends StatelessWidget {
                       const Text('Member Since: '),
                       Text(
                         DateFormat('dd/MM/yyyy')
-                            .format(user.created_at.toDate()),
+                            .format(widget.user.created_at.toDate()),
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       )
                     ]),
@@ -60,11 +75,13 @@ class UserScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text('Rating: '),
-                        Text('${user.rating}',
+                        Text('${_user.upVoters}',
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 20)),
                         TextButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                             await upVotesUser(widget.user.id);
+                            },
                             child: const Text('👍',
                                 style: TextStyle(
                                     fontSize: 20, color: Colors.black))),
@@ -83,7 +100,7 @@ class UserScreen extends StatelessWidget {
                     width: 2.0,
                     color: Color.fromARGB(255, 186, 182, 182),
                     style: BorderStyle.solid)),
-            child: Text('About me: ${user.about_me}'),
+            child: Text('About me: ${widget.user.about_me}'),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

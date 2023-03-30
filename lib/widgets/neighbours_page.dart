@@ -41,7 +41,7 @@ class _NeighboursPageState extends State<NeighboursPage> {
                                     name: data['name'],
                                     about_me:
                                         data['about_me'] ?? "No Info provided",
-                                    rating: data['rating'] ?? 0,
+                                    upVoters: data['upVoters'] == null ? 0 : data['upVoters'].length,
                                     dob: data['dob'] ?? "No Info provided",
                                     street:
                                         data['street'] ?? "address unavailable",
