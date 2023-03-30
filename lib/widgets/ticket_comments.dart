@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../models/comment.dart';
 import '../models/user.dart';
+import 'ticket_comment.dart';
 
 class TicketComments extends StatelessWidget {
   const TicketComments({Key? key, required this.ticketId}) : super(key: key);
@@ -15,6 +16,7 @@ class TicketComments extends StatelessWidget {
           .collection('tickets')
           .doc(ticketId)
           .collection('comments')
+          .orderBy('created_at', descending: true)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) return const Text('Something went wrong..');
@@ -42,10 +44,9 @@ class TicketComments extends StatelessWidget {
                   future: UserModel.loadUserDetails(comment.senderId),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 12, right: 12),
-                        child: Text(comment.message),
-                      );
+                      UserModel user = snapshot.data!;
+
+                      return TicketComment(user: user, comment: comment);
                     } else {
                       return Container();
                     }

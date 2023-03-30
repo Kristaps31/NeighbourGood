@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:neighbour_good/models/comment.dart';
 import 'package:neighbour_good/models/user.dart';
@@ -33,7 +34,11 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
   }
 
   _sendMessage(BuildContext context) {
-    CommentModel.createNew(senderId: widget.user.id, message: _messageController.text)
+    CommentModel.createNew(
+            senderId: FirebaseAuth.instance.currentUser != null
+                ? FirebaseAuth.instance.currentUser!.uid
+                : '',
+            message: _messageController.text)
         .addComment(widget.ticket.id)
         .then((value) {
       _messageController.text = '';
@@ -47,6 +52,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(widget.ticket.title),
         elevation: 2,
