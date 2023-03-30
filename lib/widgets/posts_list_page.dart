@@ -39,16 +39,10 @@ class PostsListPage extends StatelessWidget {
 
         if (snapshot.hasData) {
           final docs = snapshot.data!.docs;
-          final data = docs[0];
-          Ticket prototypeTicket = Ticket.fromFirestore(data);
 
           return ListView.builder(
               padding: const EdgeInsets.only(bottom: 70, top: 12),
               itemCount: docs.length,
-              prototypeItem: TicketCard(
-                user: UserModel.empty(),
-                ticket: prototypeTicket,
-              ),
               itemBuilder: (context, index) {
                 final data = docs[index];
                 Ticket ticket = Ticket.fromFirestore(data);
@@ -56,7 +50,7 @@ class PostsListPage extends StatelessWidget {
                 return FutureBuilder<UserModel>(
                   future: UserModel.loadUserDetails(ticket.ownerId),
                   builder: (context, snapshot) {
-                    if (snapshot.hasData) {
+                    if (snapshot.hasData && snapshot.data!.name != '') {
                       return TicketCard(
                         ticket: ticket,
                         user: snapshot.data!,

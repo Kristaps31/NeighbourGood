@@ -11,7 +11,14 @@ class User {
   // ignore: prefer_typing_uninitialized_variables
   final created_at;
 
-  User({required this.id, required this.name, required this.about_me, required this.rating, required this.dob, required this.street, required this.created_at});
+  User(
+      {required this.id,
+      required this.name,
+      required this.about_me,
+      required this.rating,
+      required this.dob,
+      required this.street,
+      required this.created_at});
 }
 
 class UserModel {
@@ -22,12 +29,16 @@ class UserModel {
   UserModel({required this.id, this.name = '', required this.profileImgUrl});
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    return UserModel(
-      id: doc.id,
-      name: data['name'],
-      profileImgUrl: data['img'],
-    );
+    if (doc.exists) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      return UserModel(
+        id: doc.id,
+        name: data['name'],
+        profileImgUrl: data['img'],
+      );
+    } else {
+      return UserModel.empty();
+    }
   }
 
   factory UserModel.empty() {
