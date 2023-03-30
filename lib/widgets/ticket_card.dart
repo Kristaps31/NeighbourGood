@@ -113,19 +113,22 @@ class TicketCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         ticket.ownerId == FirebaseAuth.instance.currentUser!.uid
-                            ? SizedBox(
-                                height: 20,
-                                width: 30,
-                                child: TextButton(
-                                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                                    onPressed: () {
-                                      ticket.removeTicket(parentContext);
-                                    },
-                                    child: const Icon(
-                                      Icons.delete_forever,
-                                      color: Colors.red,
-                                      size: 25,
-                                    )),
+                            ? Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: SizedBox(
+                                  height: 20,
+                                  width: 30,
+                                  child: TextButton(
+                                      style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                                      onPressed: () {
+                                        ticket.removeTicket(parentContext);
+                                      },
+                                      child: const Icon(
+                                        Icons.delete_forever,
+                                        color: Colors.red,
+                                        size: 25,
+                                      )),
+                                ),
                               )
                             : Container(),
                       ],
