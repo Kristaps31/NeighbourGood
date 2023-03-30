@@ -11,10 +11,10 @@ class NeighboursPage extends StatefulWidget {
 }
 
 class _NeighboursPageState extends State<NeighboursPage> {
-@override
-void initState() {
-  super.initState();
-}
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,17 +33,21 @@ void initState() {
                   return ListTile(
                     onTap: () {
                       Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => UserScreen(
-                                  user: User(
-                                      id: docs[index].id,
-                                      name: data['name'],
-                                      about_me: data['about_me'] ?? "No Info provided",
-                                      rating: data['rating'] ?? 0,
-                                      dob: data['dob'] ?? "No Info provided",
-                                      street: data['street'] ?? "address unavailable",
-                                      created_at: data['created_at'] ?? "Not available",
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserScreen(
+                                      user: User(
+                                    id: docs[index].id,
+                                    name: data['name'],
+                                    about_me:
+                                        data['about_me'] ?? "No Info provided",
+                                    rating: data['rating'] ?? 0,
+                                    dob: data['dob'] ?? "No Info provided",
+                                    street:
+                                        data['street'] ?? "address unavailable",
+                                    created_at:
+                                        data['created_at'] ?? "Not available",
+                                    img: data['img'],
                                   ))));
                     },
                     title: Text(data["name"] ?? ''),
