@@ -41,7 +41,7 @@ class PostsListPage extends StatelessWidget {
           final docs = snapshot.data!.docs;
 
           return ListView.builder(
-              padding: const EdgeInsets.only(bottom: 70, top: 12),
+              padding: const EdgeInsets.only(bottom: 70),
               itemCount: docs.length,
               itemBuilder: (context, index) {
                 final data = docs[index];

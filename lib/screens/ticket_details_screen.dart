@@ -18,13 +18,30 @@ class TicketDetailsScreen extends StatefulWidget {
 }
 
 class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
+  final ScrollController _scrollController = ScrollController();
   final _messageController = TextEditingController();
+  final double _appBarVisibleHeight = 15.0;
+
   bool _isSendButtonDisabled = true;
+  bool _isAppBarVisible = false;
 
   @override
   void initState() {
     super.initState();
     _messageController.addListener(_onMessageChanged);
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.offset > _appBarVisibleHeight && !_isAppBarVisible) {
+      setState(() {
+        _isAppBarVisible = true;
+      });
+    } else if (_scrollController.offset <= _appBarVisibleHeight && _isAppBarVisible) {
+      setState(() {
+        _isAppBarVisible = false;
+      });
+    }
   }
 
   void _onMessageChanged() {
@@ -54,8 +71,10 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(widget.ticket.title),
-        elevation: 2,
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        title: Text(_isAppBarVisible ? widget.ticket.title : ''),
+        elevation: 0,
       ),
       body: GestureDetector(
         onTap: () {
@@ -64,6 +83,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
         child: Stack(
           children: [
             SingleChildScrollView(
+                controller: _scrollController,
                 padding: const EdgeInsets.only(bottom: 10),
                 physics: const ScrollPhysics(),
                 child: Column(
@@ -80,11 +100,11 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   border: Border(
-                    top: BorderSide(width: 0.5, color: Color.fromARGB(255, 204, 204, 204)),
+                    top: BorderSide(width: 0.5, color: Theme.of(context).highlightColor),
                   ),
-                  color: Color.fromARGB(255, 245, 245, 245),
+                  color: Color.fromARGB(255, 255, 248, 248),
                 ),
                 child: Padding(
                     padding: const EdgeInsets.only(left: 10, right: 0, top: 5, bottom: 5),
@@ -105,8 +125,22 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(24),
                               borderSide: const BorderSide(
-                                width: 1.0, // Change this value to adjust the border width
-                                color: Color.fromARGB(255, 235, 235, 235),
+                                width: 0.5, // Change this value to adjust the border width
+                                color: Color.fromARGB(255, 216, 216, 216),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(24),
+                              borderSide: BorderSide(
+                                width: 1, // Change this value to adjust the border width
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(24),
+                              borderSide: const BorderSide(
+                                width: 0.5, // Change this value to adjust the border width
+                                color: Color.fromARGB(255, 216, 216, 216),
                               ),
                             ),
                           ),

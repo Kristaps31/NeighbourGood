@@ -26,13 +26,13 @@ class TicketComments extends StatelessWidget {
 
           if (docs.isEmpty) {
             return const Padding(
-              padding: EdgeInsets.only(top: 8.0),
+              padding: EdgeInsets.only(top: 25),
               child: Center(child: Text('No comments yet')),
             );
           }
 
           return ListView.builder(
-              padding: const EdgeInsets.only(bottom: 70, top: 5),
+              padding: const EdgeInsets.only(bottom: 70, top: 12),
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: docs.length,

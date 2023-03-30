@@ -16,7 +16,7 @@ class TicketCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 0),
       child: InkWell(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -27,15 +27,13 @@ class TicketCard extends StatelessWidget {
           }
         },
         child: Container(
-          decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(0)),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                    blurRadius: 1, color: Colors.black.withOpacity(0.2), offset: const Offset(0, 0))
-              ]),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            border: Border(bottom: BorderSide(color: Color.fromARGB(255, 231, 230, 230))),
+          ),
           child: Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 8, left: 12, right: 12),
+            padding:
+                EdgeInsets.only(top: isExpanded == true ? 0 : 12, bottom: 12, left: 12, right: 12),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -90,11 +88,11 @@ class TicketCard extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.only(left: 7, right: 7),
                             decoration: BoxDecoration(
-                                border: Border.all(width: 1, color: const Color(0xFF6750A4)),
+                                border: Border.all(width: 1, color: Theme.of(context).primaryColor),
                                 borderRadius: const BorderRadius.all(Radius.circular(3))),
                             child: Text(
                               ticket.category,
-                              style: const TextStyle(color: Color(0xFF6750A4), fontSize: 13),
+                              style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 13),
                             ),
                           ),
                         ],
