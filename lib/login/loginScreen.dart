@@ -91,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               context, MaterialPageRoute(builder: (context) => ForgotPass()));
                         },
                         child: Text(
-                          'Forget Password',
+                          'Forgot Password',
                           style: GoogleFonts.lato(
                               fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue),
                         ))),

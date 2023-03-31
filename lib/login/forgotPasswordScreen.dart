@@ -22,8 +22,7 @@ class _ForgetPassState extends State<ForgotPass> {
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         FirebaseAuth.instance.sendPasswordResetEmail(email: _email.text);
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
         errorMessage = '';
       } else {
         setState(() {
@@ -45,7 +44,7 @@ class _ForgetPassState extends State<ForgotPass> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const Text(
-                  'Forget Password',
+                  'Forgot Password',
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                 ),
                 TextFormField(
@@ -53,8 +52,7 @@ class _ForgetPassState extends State<ForgotPass> {
                   validator: validateEmail,
                   controller: _email,
                   decoration: const InputDecoration(
-                      hintText: 'Enter your Email address',
-                      icon: Icon(Icons.mail_lock)),
+                      hintText: 'Enter your Email address', icon: Icon(Icons.mail_lock)),
                 ),
                 Center(
                   child: Text(
@@ -68,9 +66,8 @@ class _ForgetPassState extends State<ForgotPass> {
                 ElevatedButton(
                     onPressed: forgetPassword,
                     child: Text(
-                      'Forget Password',
-                      style: GoogleFonts.lato(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                      'Forgot Password',
+                      style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.bold),
                     )),
                 const SizedBox(
                   height: 10,
@@ -85,16 +82,12 @@ class _ForgetPassState extends State<ForgotPass> {
                     GestureDetector(
                         onTap: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginScreen()));
+                              context, MaterialPageRoute(builder: (context) => LoginScreen()));
                         },
                         child: Text(
                           'Login',
                           style: GoogleFonts.lato(
-                              color: Colors.blue,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
+                              color: Colors.blue, fontSize: 16, fontWeight: FontWeight.bold),
                         ))
                   ],
                 )
