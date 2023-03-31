@@ -137,10 +137,10 @@ class TicketCard extends StatelessWidget {
                             if (snapshot.hasData) {
                               final newCommentCount = snapshot.data!;
 
-                              return Text(newCommentCount.toString());
+                              return Text('$newCommentCount comments');
                             }
 
-                            return Text(commentCount.toString());
+                            return Text('$commentCount comments');
                           })
                     ],
                   ),
