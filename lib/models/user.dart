@@ -49,8 +49,11 @@ class UserModel {
   }
 
   static Future<UserModel> loadUserDetails(String ownerId) async {
-    DocumentSnapshot<Map<String, dynamic>> response =
-        await FirebaseFirestore.instance.collection('profiles').doc(ownerId).get();
+    DocumentSnapshot<Map<String, dynamic>> response = await FirebaseFirestore
+        .instance
+        .collection('profiles')
+        .doc(ownerId)
+        .get();
     UserModel user = UserModel.fromFirestore(response);
     return user;
   }

@@ -51,7 +51,7 @@ class _CreateProfileState extends State<CreateProfile> {
             street = snapshot.data()!['street'];
             img = snapshot.data()!['img'];
             rating = snapshot.data()!['rating'] ?? 0;
-            about = snapshot.data()!['about'] ?? 'Not yet updated';
+            about = snapshot.data()!['about'] ?? 'No Info provided';
           });
         }
       });
@@ -96,8 +96,10 @@ class _CreateProfileState extends State<CreateProfile> {
         child: Column(children: [
           CircleAvatar(
               radius: 80,
-              backgroundImage: NetworkImage(displayUrl == '' ? img : displayUrl),
-              child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+              backgroundImage:
+                  NetworkImage(displayUrl == '' ? img : displayUrl),
+              child:
+                  Column(mainAxisAlignment: MainAxisAlignment.end, children: [
                 ElevatedButton.icon(
                   onPressed: submit,
                   icon: const Icon(Icons.edit),
@@ -383,7 +385,7 @@ class _CreateProfileState extends State<CreateProfile> {
                           return setState(() => {
                                 aboutEditable = false,
                                 about = value,
-                                update.update({'about': value})
+                                update.update({'about_me': value})
                               });
                         }
                         return setState(() {
