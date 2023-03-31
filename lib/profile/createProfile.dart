@@ -270,12 +270,25 @@ class _CreateProfileState extends State<CreateProfile> {
                             dob = dob;
                           });
                         })),
-            const Text('Address',
-                style: TextStyle(
-                  fontSize: 20,
-                )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Street Address',
+                    style: TextStyle(
+                      fontSize: 20,
+                    )),
+                !streetEditable
+                    ? IconButton(
+                        // iconSize: 21,
+                        icon: Icon(Icons.edit_note),
+                        onPressed: () {
+                          setState(() => {streetEditable = true});
+                        },
+                      )
+                    : Text(''),
+              ],
+            ),
             Container(
-                margin: EdgeInsets.only(left: 50),
                 child: !streetEditable
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -284,13 +297,6 @@ class _CreateProfileState extends State<CreateProfile> {
                             street,
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          IconButton(
-                            // iconSize: 21,
-                            icon: Icon(Icons.edit_note),
-                            onPressed: () {
-                              setState(() => {streetEditable = true});
-                            },
                           ),
                         ],
                       )
@@ -332,30 +338,45 @@ class _CreateProfileState extends State<CreateProfile> {
                             street = street;
                           });
                         })),
-            const Text('About Me',
-                style: TextStyle(
-                  fontSize: 20,
-                )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('About Me',
+                    style: TextStyle(
+                      fontSize: 20,
+                    )),
+                !aboutEditable
+                    ? IconButton(
+                        // iconSize: 21,
+                        icon: Icon(Icons.edit_note),
+                        onPressed: () {
+                          setState(() => {aboutEditable = true});
+                        },
+                      )
+                    : Text(''),
+              ],
+            ),
             Container(
+                padding: EdgeInsets.only(left: 20),
                 child: !aboutEditable
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            about,
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          IconButton(
-                            // iconSize: 21,
-                            icon: Icon(Icons.edit_note),
-                            onPressed: () {
-                              setState(() => {aboutEditable = true});
-                            },
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                about.trim(),
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ),
                           ),
                         ],
                       )
                     : TextFormField(
+                        minLines: null,
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
                         autofocus: true,
                         textAlign: TextAlign.center,
                         decoration: InputDecoration(
