@@ -162,12 +162,14 @@ class TicketCard extends StatelessWidget {
                                                     color: Colors.grey,
                                                   ),
                                                 ),
-                                                Text('$newCommentCount comments'),
+                                                Text(
+                                                    '$newCommentCount comment${commentCount != 1 ? 's' : ''}'),
                                               ],
                                             );
                                           }
 
-                                          return Text('$commentCount comments');
+                                          return Text(
+                                              '$commentCount comment${commentCount != 1 ? 's' : ''}');
                                         }),
                                     if (!ticket.isOpen && !isExpanded)
                                       const Padding(
