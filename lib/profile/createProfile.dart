@@ -51,7 +51,7 @@ class _CreateProfileState extends State<CreateProfile> {
             street = snapshot.data()!['street'];
             img = snapshot.data()!['img'];
             rating = snapshot.data()!['rating'] ?? 0;
-            about = snapshot.data()!['about'] ?? 'No Info provided';
+            about = snapshot.data()!['about_me'] ?? 'No Info provided';
           });
         }
       });
@@ -337,7 +337,6 @@ class _CreateProfileState extends State<CreateProfile> {
                   fontSize: 20,
                 )),
             Container(
-                margin: EdgeInsets.only(left: 50),
                 child: !aboutEditable
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
