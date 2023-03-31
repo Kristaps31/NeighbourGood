@@ -1,9 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:neighbour_good/models/comment.dart';
 import 'package:neighbour_good/models/ticket.dart';
+import 'package:neighbour_good/widgets/report_issue_screen.dart';
 import 'package:neighbour_good/screens/ticket_details_screen.dart';
 
 import '../models/user.dart';
@@ -14,12 +15,14 @@ class TicketCard extends StatelessWidget {
       required this.ticket,
       required this.user,
       this.commentCount = 0,
-      this.isExpanded = false})
+      this.isExpanded = false,
+      required this.parentContext})
       : super(key: key);
   final Ticket ticket;
   final UserModel user;
   final bool isExpanded;
   final int commentCount;
+  final BuildContext parentContext;
 
   @override
   Widget build(BuildContext context) {
@@ -129,19 +132,72 @@ class TicketCard extends StatelessWidget {
                         overflow: !isExpanded ? TextOverflow.ellipsis : TextOverflow.clip,
                         style: const TextStyle(fontSize: 15),
                       ),
-                      StreamBuilder<int>(
-                          stream: CommentModel.commentCountStream(ticket.id),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasError) return const Text('Something went wrong..');
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        StreamBuilder<int>(
+                            stream: CommentModel.commentCountStream(ticket.id),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) return const Text('Something went wrong..');
 
-                            if (snapshot.hasData) {
-                              final newCommentCount = snapshot.data!;
+                              if (snapshot.hasData) {
+                                final newCommentCount = snapshot.data!;
 
-                              return Text('$newCommentCount comments');
-                            }
+                                return Text('$newCommentCount comments');
+                              }
 
-                            return Text('$commentCount comments');
-                          })
+                              return Text('$commentCount comments');
+                            }),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ReportIssueScreen(ticketId: ticket.id)));
+                          },
+                          style: ElevatedButton.styleFrom(minimumSize: const Size(4, 14)),
+                          child: const Icon(
+                            Icons.report_problem,
+                            size: 15,
+                          ),
+                        ),
+                        ticket.ownerId == FirebaseAuth.instance.currentUser!.uid
+                            ? Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: SizedBox(
+                                  height: 20,
+                                  width: 30,
+                                  child: TextButton(
+                                      style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                                      onPressed: () {
+                                        showDialog(
+                                            context: parentContext,
+                                            builder: (context) => AlertDialog(
+                                                  title: const Text("Confirm"),
+                                                  content: Text(
+                                                      "Are you sure you would like to delete ${ticket.title} post?"),
+                                                  actions: [
+                                                    TextButton(
+                                                      child: const Text("Cancel"),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                    TextButton(
+                                                      child: const Text("Yes"),
+                                                      onPressed: () {
+                                                        ticket.removeTicket(parentContext);
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ],
+                                                ));
+                                      },
+                                      child: const Icon(
+                                        Icons.delete_forever,
+                                        color: Colors.red,
+                                        size: 25,
+                                      )),
+                                ),
+                              )
+                            : Container(),
+                      ]),
                     ],
                   ),
                 ),

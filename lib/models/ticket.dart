@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class Ticket {
   String id;
@@ -31,5 +32,22 @@ class Ticket {
         isOpen: data['is_opened'] ?? true,
         title: data['title'],
         type: data['type']);
+  }
+
+  Future<void> removeTicket(BuildContext context) {
+    return FirebaseFirestore.instance
+        .collection('tickets')
+        .doc(id)
+        .delete()
+        .then((value) => {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("Your $type has been successfully deleted!"),
+              ))
+            })
+        .catchError((e) => {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Something went wrong!"),
+              ))
+            });
   }
 }

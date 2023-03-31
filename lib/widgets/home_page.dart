@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
           child: Scaffold(
             floatingActionButton: FabWithIcons(
               icons: const [Icons.chat_rounded, Icons.waving_hand],
-              labels: const ["Ask For Help", "Offer Help"],
+              labels: const ["Request Help", "Offer Help"],
               onIconTapped: (index) {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => NewTicketScreen(

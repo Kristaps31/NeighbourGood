@@ -95,7 +95,7 @@ class _NewTicketScreenState extends State<NewTicketScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(widget.type == 'help' ? 'Ask for help' : 'Offer help')),
+        appBar: AppBar(title: Text(widget.type == 'help' ? 'Request Help' : 'Offer Help')),
         body: GestureDetector(
           onTap: () {
             FocusScopeNode currentFocus = FocusScope.of(context);

@@ -97,6 +97,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                       user: widget.user,
                       isExpanded: true,
                       commentCount: widget.commentCount,
+                      parentContext: context,
                     ),
                     TicketComments(ticketId: widget.ticket.id)
                   ],

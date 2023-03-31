@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CreateProfile extends StatefulWidget {
   const CreateProfile({super.key});
@@ -16,13 +17,26 @@ class CreateProfile extends StatefulWidget {
 }
 
 class _CreateProfileState extends State<CreateProfile> {
+  final update = FirebaseFirestore.instance
+      .collection('profiles')
+      .doc(FirebaseAuth.instance.currentUser!.uid);
+  final _name = TextEditingController();
+  final _dob = TextEditingController();
+  final _street = TextEditingController();
   final ImagePicker picker = ImagePicker();
   String name = '';
   String dob = '';
   String street = '';
   String img = '';
+  String about = '';
+  int rating = 0;
   String displayUrl = '';
   String display = '';
+  bool nameEditable = false;
+  bool dobEditable = false;
+  bool streetEditable = false;
+  bool aboutEditable = false;
+  FToast fToast = FToast();
   _getData() async {
     try {
       await FirebaseFirestore.instance
@@ -36,6 +50,8 @@ class _CreateProfileState extends State<CreateProfile> {
             dob = snapshot.data()!['dob'];
             street = snapshot.data()!['street'];
             img = snapshot.data()!['img'];
+            rating = snapshot.data()!['rating'] ?? 0;
+            about = snapshot.data()!['about'] ?? 'Not yet updated';
           });
         }
       });
@@ -66,8 +82,11 @@ class _CreateProfileState extends State<CreateProfile> {
 
   @override
   void initState() {
+    FocusManager.instance.primaryFocus?.unfocus();
     super.initState();
     _getData();
+    fToast = FToast();
+    fToast.init(context);
   }
 
   @override
@@ -77,10 +96,8 @@ class _CreateProfileState extends State<CreateProfile> {
         child: Column(children: [
           CircleAvatar(
               radius: 80,
-              backgroundImage:
-                  NetworkImage(displayUrl == '' ? img : displayUrl),
-              child:
-                  Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+              backgroundImage: NetworkImage(displayUrl == '' ? img : displayUrl),
+              child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
                 ElevatedButton.icon(
                   onPressed: submit,
                   icon: const Icon(Icons.edit),
@@ -97,6 +114,17 @@ class _CreateProfileState extends State<CreateProfile> {
                     setState(() {
                       display = '';
                     });
+                    fToast.showToast(
+                      child: Text(
+                        'Image successfully updated',
+                        style: TextStyle(
+                            backgroundColor: Colors.black,
+                            color: Colors.white,
+                            fontSize: 18),
+                      ),
+                      gravity: ToastGravity.BOTTOM,
+                      toastDuration: Duration(seconds: 2),
+                    );
                   },
                   child: const Text('save to cloud'),
                 )
@@ -108,45 +136,261 @@ class _CreateProfileState extends State<CreateProfile> {
               fontSize: 20,
             ),
           ),
-          const Text(
-            '★★★★☆',
-            style: const TextStyle(fontSize: 17),
+          Text(
+            '${rating == 0 ? '☆☆☆☆☆' : rating == 1 ? '★☆☆☆☆' : rating == 2 ? '★★☆☆☆' : rating == 3 ? '★★★☆☆' : rating == 4 ? '★★★★☆' : rating == 5 ? '★★★★★' : '★★★★★'}',
+            style: TextStyle(fontSize: 17),
           ),
           const SizedBox(
             height: 10,
           ),
           const Text(
             'Full Name',
-            style: TextStyle(
-              fontSize: 20,
-            ),
+            style: TextStyle(fontSize: 20),
           ),
-          Text(
-            name,
-            style: const TextStyle(fontSize: 17),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
+          Container(
+              margin: EdgeInsets.only(left: 50),
+              child: !nameEditable
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          name,
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        IconButton(
+                          // iconSize: 21,
+                          icon: Icon(Icons.edit_note),
+                          onPressed: () {
+                            setState(() => {nameEditable = true});
+                          },
+                        ),
+                      ],
+                    )
+                  : TextFormField(
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                      ),
+                      textAlign: TextAlign.center,
+                      initialValue: name,
+                      textInputAction: TextInputAction.done,
+                      onFieldSubmitted: (value) async {
+                        if (await confirm(
+                          context,
+                          title: const Text('Confirm'),
+                          content: const Text('Updating Name?'),
+                          textOK: const Text('Yes'),
+                          textCancel: const Text('No'),
+                        )) {
+                          fToast.showToast(
+                            child: Text(
+                              'Name successfully updated',
+                              style: TextStyle(
+                                  backgroundColor: Colors.black,
+                                  color: Colors.white,
+                                  fontSize: 18),
+                            ),
+                            gravity: ToastGravity.BOTTOM,
+                            toastDuration: Duration(seconds: 2),
+                          );
+                          return setState(() => {
+                                nameEditable = false,
+                                name = value,
+                                update.update({'name': value})
+                              });
+                        }
+                        return setState(() {
+                          nameEditable = false;
+                          name = name;
+                        });
+                      })),
           const Text('Date of Birth',
               style: TextStyle(
                 fontSize: 20,
               )),
-          Text(
-            dob,
-            style: const TextStyle(fontSize: 17),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
+          Container(
+              margin: EdgeInsets.only(left: 50),
+              child: !dobEditable
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          dob,
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        IconButton(
+                          // iconSize: 21,
+                          icon: Icon(Icons.edit_note),
+                          onPressed: () {
+                            setState(() => {dobEditable = true});
+                          },
+                        ),
+                      ],
+                    )
+                  : TextFormField(
+                      autofocus: true,
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                      ),
+                      initialValue: dob,
+                      textInputAction: TextInputAction.done,
+                      onFieldSubmitted: (value) async {
+                        if (await confirm(
+                          context,
+                          title: const Text('Confirm'),
+                          content: const Text('Updating Date of Birth?'),
+                          textOK: const Text('Yes'),
+                          textCancel: const Text('No'),
+                        )) {
+                          fToast.showToast(
+                            child: Text(
+                              'Date of Birth successfully updated',
+                              style: TextStyle(
+                                  backgroundColor: Colors.black,
+                                  color: Colors.white,
+                                  fontSize: 18),
+                            ),
+                            gravity: ToastGravity.BOTTOM,
+                            toastDuration: Duration(seconds: 2),
+                          );
+                          return setState(() => {
+                                dobEditable = false,
+                                dob = value,
+                                update.update({'dob': value})
+                              });
+                        }
+                        return setState(() {
+                          dobEditable = false;
+                          dob = dob;
+                        });
+                      })),
           const Text('Address',
               style: TextStyle(
                 fontSize: 20,
               )),
-          Text(
-            street,
-            style: const TextStyle(fontSize: 17),
-          ),
+          Container(
+              margin: EdgeInsets.only(left: 50),
+              child: !streetEditable
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          street,
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        IconButton(
+                          // iconSize: 21,
+                          icon: Icon(Icons.edit_note),
+                          onPressed: () {
+                            setState(() => {streetEditable = true});
+                          },
+                        ),
+                      ],
+                    )
+                  : TextFormField(
+                      autofocus: true,
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                      ),
+                      initialValue: street,
+                      textInputAction: TextInputAction.done,
+                      onFieldSubmitted: (value) async {
+                        if (await confirm(
+                          context,
+                          title: const Text('Confirm'),
+                          content: const Text('Updating Street Address?'),
+                          textOK: const Text('Yes'),
+                          textCancel: const Text('No'),
+                        )) {
+                          fToast.showToast(
+                            child: Text(
+                              'Street Address successfully updated',
+                              style: TextStyle(
+                                  backgroundColor: Colors.black,
+                                  color: Colors.white,
+                                  fontSize: 18),
+                            ),
+                            gravity: ToastGravity.BOTTOM,
+                            toastDuration: Duration(seconds: 2),
+                          );
+                          return setState(() => {
+                                streetEditable = false,
+                                street = value,
+                                update.update({'street': value})
+                              });
+                        }
+                        return setState(() {
+                          streetEditable = false;
+                          street = street;
+                        });
+                      })),
+          const Text('About Me',
+              style: TextStyle(
+                fontSize: 20,
+              )),
+          Container(
+              margin: EdgeInsets.only(left: 50),
+              child: !aboutEditable
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          about,
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        IconButton(
+                          // iconSize: 21,
+                          icon: Icon(Icons.edit_note),
+                          onPressed: () {
+                            setState(() => {aboutEditable = true});
+                          },
+                        ),
+                      ],
+                    )
+                  : TextFormField(
+                      autofocus: true,
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                      ),
+                      initialValue: about,
+                      textInputAction: TextInputAction.done,
+                      onFieldSubmitted: (value) async {
+                        if (await confirm(
+                          context,
+                          title: const Text('Confirm'),
+                          content: const Text('Updating About Me?'),
+                          textOK: const Text('Yes'),
+                          textCancel: const Text('No'),
+                        )) {
+                          fToast.showToast(
+                            child: Text(
+                              'About Me successfully updated',
+                              style: TextStyle(
+                                  backgroundColor: Colors.black,
+                                  color: Colors.white,
+                                  fontSize: 18),
+                            ),
+                            gravity: ToastGravity.BOTTOM,
+                            toastDuration: Duration(seconds: 2),
+                          );
+                          return setState(() => {
+                                aboutEditable = false,
+                                about = value,
+                                update.update({'about': value})
+                              });
+                        }
+                        return setState(() {
+                          aboutEditable = false;
+                          about = about;
+                        });
+                      })),
         ]),
       ),
     );
