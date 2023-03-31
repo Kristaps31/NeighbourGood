@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:neighbour_good/models/ticket.dart';
+import 'package:neighbour_good/widgets/report_issue_screen.dart';
 
 import '../models/user.dart';
 
 class TicketCard extends StatelessWidget {
-  const TicketCard({Key? key, required this.ticket, required this.user}) : super(key: key);
+  const TicketCard({Key? key, required this.ticket, required this.user})
+      : super(key: key);
   final Ticket ticket;
   final UserModel user;
 
@@ -19,10 +21,13 @@ class TicketCard extends StatelessWidget {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                  blurRadius: 1, color: Colors.black.withOpacity(0.2), offset: const Offset(0, 0))
+                  blurRadius: 1,
+                  color: Colors.black.withOpacity(0.2),
+                  offset: const Offset(0, 0))
             ]),
         child: Padding(
-          padding: const EdgeInsets.only(top: 8, bottom: 8, left: 12, right: 12),
+          padding:
+              const EdgeInsets.only(top: 8, bottom: 8, left: 12, right: 12),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -68,34 +73,42 @@ class TicketCard extends StatelessWidget {
                             ),
                             const Text(' · '),
                             Text(
-                              ticket.type == 'help' ? 'asked for help ' : 'offered help ',
+                              ticket.type == 'help'
+                                  ? 'asked for help '
+                                  : 'offered help ',
                               style: const TextStyle(
-                                  color: Color.fromARGB(255, 80, 80, 80), fontSize: 13),
+                                  color: Color.fromARGB(255, 80, 80, 80),
+                                  fontSize: 13),
                             ),
                           ],
                         ),
                         Container(
                           padding: const EdgeInsets.only(left: 7, right: 7),
                           decoration: BoxDecoration(
-                              border: Border.all(width: 1, color: const Color(0xFF6750A4)),
-                              borderRadius: const BorderRadius.all(Radius.circular(3))),
+                              border: Border.all(
+                                  width: 1, color: const Color(0xFF6750A4)),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(3))),
                           child: Text(
                             ticket.category,
-                            style: const TextStyle(color: Color(0xFF6750A4), fontSize: 13),
+                            style: const TextStyle(
+                                color: Color(0xFF6750A4), fontSize: 13),
                           ),
                         ),
                       ],
                     ),
                     Text(
                       Jiffy(ticket.createdAt.toDate()).fromNow(),
-                      style: const TextStyle(color: Color.fromARGB(255, 80, 80, 80), fontSize: 13),
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 80, 80, 80), fontSize: 13),
                     ),
                     const SizedBox(
                       height: 1,
                     ),
                     Text(
                       ticket.title,
-                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w500, fontSize: 16),
                     ),
                     const SizedBox(
                       height: 10,
@@ -105,6 +118,19 @@ class TicketCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontSize: 15),
                     ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                ReportIssueScreen(ticketId: ticket.id)));
+                      },
+                      style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(4, 14)),
+                      child: const Icon(
+                        Icons.report_problem,
+                        size: 15,
+                      ),
+                    )
                   ],
                 ),
               ),
