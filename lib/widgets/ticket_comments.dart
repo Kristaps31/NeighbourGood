@@ -18,7 +18,7 @@ class TicketComments extends StatelessWidget {
           .collection('comments')
           .orderBy('created_at', descending: true)
           .snapshots(),
-      builder: (context, snapshot) {
+      builder: (parentContext, snapshot) {
         if (snapshot.hasError) return const Text('Something went wrong..');
 
         if (snapshot.hasData) {
@@ -36,7 +36,7 @@ class TicketComments extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: docs.length,
-              itemBuilder: (parentContext, index) {
+              itemBuilder: (context, index) {
                 final data = docs[index];
                 CommentModel comment = CommentModel.fromFirestore(data);
 
