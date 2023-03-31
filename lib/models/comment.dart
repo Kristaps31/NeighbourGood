@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class CommentModel {
   final String id;
@@ -46,13 +47,32 @@ class CommentModel {
         .add(toFirestore());
   }
 
+  Future<void> deleteComment(String ticketId, String commentId, BuildContext context) {
+    return FirebaseFirestore.instance
+        .collection('tickets')
+        .doc(ticketId)
+        .collection('comments')
+        .doc(commentId)
+        .delete()
+        .then((querySnapshot) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Comment deleted!"),
+      ));
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Something went wrong!"),
+      ));
+    });
+  }
+
   static Future<int> getCommentCount(String ticketId) {
     return FirebaseFirestore.instance
         .collection('tickets')
         .doc(ticketId)
         .collection('comments')
+        .count()
         .get()
-        .then((querySnapshot) => querySnapshot.size);
+        .then((querySnapshot) => querySnapshot.count);
   }
 
   static Stream<int> commentCountStream(String ticketId) {

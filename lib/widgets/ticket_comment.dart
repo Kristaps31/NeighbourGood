@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 
@@ -9,10 +10,14 @@ class TicketComment extends StatelessWidget {
     super.key,
     required this.user,
     required this.comment,
+    required this.ticketId,
+    required this.parentContext,
   });
 
   final UserModel user;
   final CommentModel comment;
+  final String ticketId;
+  final BuildContext parentContext;
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +62,35 @@ class TicketComment extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 0,
-                  ),
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0),
-                    child: Text(
-                      Jiffy(comment.createdAt.toDate()).fromNow(),
-                      style: const TextStyle(color: Color.fromARGB(255, 80, 80, 80), fontSize: 13),
+                    child: Row(
+                      children: [
+                        Text(
+                          Jiffy(comment.createdAt.toDate()).fromNow(),
+                          style:
+                              const TextStyle(color: Color.fromARGB(255, 80, 80, 80), fontSize: 13),
+                        ),
+                        if (comment.senderId == FirebaseAuth.instance.currentUser!.uid)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: TextButton(
+                              onPressed: () {
+                                comment.deleteComment(ticketId, comment.id, parentContext);
+                              },
+                              style: TextButton.styleFrom(
+                                  padding:
+                                      const EdgeInsets.only(top: 0, left: 5, right: 0, bottom: 0),
+                                  minimumSize: const Size(50, 30),
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  alignment: Alignment.centerLeft),
+                              child: const Text(
+                                'delete',
+                                style: TextStyle(color: Color.fromARGB(255, 80, 80, 80)),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ],
