@@ -22,7 +22,6 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
 
   @override
   void initState() {
-    getUserTicketRefs();
     super.initState();
   }
 
@@ -45,37 +44,6 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
     } on FirebaseException catch (e) {
       debugPrint(e.message);
     }
-  }
-
-  void getUserTicketRefs() async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('tickets')
-          .get()
-          .then((querySnapshot) {
-        String firstRef = querySnapshot.docs[0].id;
-        onIssueChange(firstRef);
-        List<String> ticketRef = querySnapshot.docs.map((e) {
-          return e.id.toString();
-        }).toList();
-        debugPrint(ticketRef.toString());
-        addTicketRef(ticketRef);
-      });
-    } catch (e) {
-      debugPrint('Error fetching ticket references: $e');
-    }
-  }
-
-  void addTicketRef(List<String> ticketRefList) {
-    setState(() {
-      _ticketRefList = ticketRefList;
-    });
-  }
-
-  void onIssueChange(ticketRef) {
-    setState(() {
-      _ticketRef = ticketRef;
-    });
   }
 
   @override
