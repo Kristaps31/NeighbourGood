@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:neighbour_good/utils/form_validation.dart';
 import 'package:neighbour_good/widgets/dropdown_category.dart';
 import 'package:flutter/services.dart';
+import 'package:neighbour_good/widgets/dropdown_issue_type.dart';
 
 class ReportIssueScreen extends StatefulWidget {
   const ReportIssueScreen({Key? key, required this.ticketId}) : super(key: key);
@@ -17,8 +18,14 @@ class ReportIssueScreen extends StatefulWidget {
 class _ReportIssueScreenState extends State<ReportIssueScreen> {
   final reportIssueTitle = TextEditingController();
   final reportIssueDescription = TextEditingController();
-  late String _ticketRef = '';
-  late List<String> _ticketRefList = [];
+  late String _issueCategory = 'Offensive, harassment or hateful speech';
+  final List<String> _issueCategories = [
+    'Offensive, harassment or hateful speech',
+    'Duplicate listing',
+    'Wrong category',
+    'Suspicious, spam or fake',
+    'Other'
+  ];
 
   @override
   void initState() {
@@ -35,6 +42,7 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
         'description': reportIssueDescription.text,
         'ticket_ref': widget.ticketId,
         'title': reportIssueTitle.text,
+        'issue_type': _issueCategory,
       }).then((value) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Your issue has been successfully reported."),
@@ -46,6 +54,12 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
     }
   }
 
+  void _onIssueChanged(issueCategory) {
+    setState(() {
+      _issueCategory = issueCategory;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,21 +67,30 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
       body: Column(
         children: [
           TextFormField(
-            controller: reportIssueTitle,
-            decoration: const InputDecoration(
-                label: Text('Title *'),
-                hintText: 'Enter issue',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.only(bottom: 10)),
-            validator: validateNotEmpty,
+              controller: reportIssueTitle,
+              decoration: const InputDecoration(
+                  label: Text('Title'),
+                  hintText: 'Enter issue',
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.only(bottom: 10, left: 15)),
+              validator: validateNotEmpty,
+              maxLength: 40),
+          DropdownIssueType(
+              onIssueChanged: _onIssueChanged,
+              issueCategory: _issueCategory,
+              issueCategories: _issueCategories),
+          const SizedBox(
+            height: 20,
           ),
           TextFormField(
             controller: reportIssueDescription,
+            maxLines: 5,
+            keyboardType: TextInputType.multiline,
             decoration: const InputDecoration(
-                label: Text('Issue *'),
+                label: Text('Issue'),
                 hintText: 'Description',
                 border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.all(10)),
+                contentPadding: EdgeInsets.only(bottom: 10, left: 15)),
             validator: validateNotEmpty,
           ),
           ElevatedButton(onPressed: submitIssue, child: const Text('Submit'))
