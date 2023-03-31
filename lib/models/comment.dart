@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CommentModel {
@@ -42,5 +44,36 @@ class CommentModel {
         .doc(ticketId)
         .collection('comments')
         .add(toFirestore());
+  }
+
+  static Future<int> getCommentCount(String ticketId) {
+    return FirebaseFirestore.instance
+        .collection('tickets')
+        .doc(ticketId)
+        .collection('comments')
+        .get()
+        .then((querySnapshot) => querySnapshot.size);
+  }
+
+  //  static Future<int> listenToCommentCount(String ticketId) {
+  //   return FirebaseFirestore.instance
+  //       .collection('tickets')
+  //       .doc(ticketId)
+  //       .collection('comments')
+  //       .snapshots()
+  //       .then((querySnapshot) => querySnapshot.size);
+  // }
+
+  static Stream<int> commentCountStream(String ticketId) {
+    return FirebaseFirestore.instance
+        .collection('tickets')
+        .doc(ticketId)
+        .collection('comments')
+        .snapshots()
+        .transform(StreamTransformer.fromHandlers(
+      handleData: (QuerySnapshot querySnapshot, EventSink<int> sink) {
+        sink.add(querySnapshot.size);
+      },
+    ));
   }
 }

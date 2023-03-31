@@ -8,10 +8,13 @@ import 'package:neighbour_good/widgets/ticket_comments.dart';
 import '../models/ticket.dart';
 
 class TicketDetailsScreen extends StatefulWidget {
-  const TicketDetailsScreen({Key? key, required this.ticket, required this.user}) : super(key: key);
+  const TicketDetailsScreen(
+      {Key? key, required this.ticket, required this.user, required this.commentCount})
+      : super(key: key);
 
   final Ticket ticket;
   final UserModel user;
+  final int commentCount;
 
   @override
   State<TicketDetailsScreen> createState() => _TicketDetailsScreenState();
@@ -93,6 +96,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                       ticket: widget.ticket,
                       user: widget.user,
                       isExpanded: true,
+                      commentCount: widget.commentCount,
                     ),
                     TicketComments(ticketId: widget.ticket.id)
                   ],
@@ -104,7 +108,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                   border: Border(
                     top: BorderSide(width: 0.5, color: Theme.of(context).highlightColor),
                   ),
-                  color: Color.fromARGB(255, 255, 248, 248),
+                  color: const Color.fromARGB(255, 255, 248, 248),
                 ),
                 child: Padding(
                     padding: const EdgeInsets.only(left: 10, right: 0, top: 5, bottom: 5),

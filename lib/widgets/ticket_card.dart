@@ -1,17 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:neighbour_good/models/comment.dart';
 import 'package:neighbour_good/models/ticket.dart';
 import 'package:neighbour_good/screens/ticket_details_screen.dart';
 
 import '../models/user.dart';
 
 class TicketCard extends StatelessWidget {
-  const TicketCard({Key? key, required this.ticket, required this.user, this.isExpanded = false})
+  const TicketCard(
+      {Key? key,
+      required this.ticket,
+      required this.user,
+      this.commentCount = 0,
+      this.isExpanded = false})
       : super(key: key);
   final Ticket ticket;
   final UserModel user;
   final bool isExpanded;
+  final int commentCount;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +31,11 @@ class TicketCard extends StatelessWidget {
 
           if (!isExpanded) {
             Navigator.of(context).push(CupertinoPageRoute(
-                builder: (context) => TicketDetailsScreen(ticket: ticket, user: user)));
+                builder: (context) => TicketDetailsScreen(
+                      ticket: ticket,
+                      user: user,
+                      commentCount: commentCount,
+                    )));
           }
         },
         child: Container(
@@ -117,6 +129,19 @@ class TicketCard extends StatelessWidget {
                         overflow: !isExpanded ? TextOverflow.ellipsis : TextOverflow.clip,
                         style: const TextStyle(fontSize: 15),
                       ),
+                      StreamBuilder<int>(
+                          stream: CommentModel.commentCountStream(ticket.id),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) return const Text('Something went wrong..');
+
+                            if (snapshot.hasData) {
+                              final newCommentCount = snapshot.data!;
+
+                              return Text(newCommentCount.toString());
+                            }
+
+                            return Text(commentCount.toString());
+                          })
                     ],
                   ),
                 ),
