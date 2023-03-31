@@ -50,4 +50,17 @@ class Ticket {
               ))
             });
   }
+
+  Stream<DocumentSnapshot<Map<String, dynamic>>> listenToTicketStatus() {
+    return FirebaseFirestore.instance.collection('tickets').doc(id).snapshots();
+  }
+
+  void changeTicketStatus() {
+    FirebaseFirestore.instance
+        .collection('tickets')
+        .doc(id)
+        .update({'is_opened': !isOpen}).then((value) {
+      isOpen = !isOpen;
+    });
+  }
 }

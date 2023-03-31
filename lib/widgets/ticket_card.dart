@@ -94,7 +94,7 @@ class TicketCard extends StatelessWidget {
                               ),
                               const Text(' · '),
                               Text(
-                                ticket.type == 'help' ? 'asked for help ' : 'offered help ',
+                                ticket.type == 'help' ? 'asked for help' : 'offered help',
                                 style: const TextStyle(
                                     color: Color.fromARGB(255, 80, 80, 80), fontSize: 13),
                               ),
@@ -140,33 +140,47 @@ class TicketCard extends StatelessWidget {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(right: 5),
-                                child: StreamBuilder<int>(
-                                    stream: CommentModel.commentCountStream(ticket.id),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasError) {
-                                        return const Text('Something went wrong..');
-                                      }
+                                child: Row(
+                                  children: [
+                                    StreamBuilder<int>(
+                                        stream: CommentModel.commentCountStream(ticket.id),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasError) {
+                                            return const Text('Something went wrong..');
+                                          }
 
-                                      if (snapshot.hasData) {
-                                        final newCommentCount = snapshot.data!;
+                                          if (snapshot.hasData) {
+                                            final newCommentCount = snapshot.data!;
 
-                                        return Row(
-                                          children: [
-                                            const Padding(
-                                              padding: EdgeInsets.only(right: 3),
-                                              child: Icon(
-                                                Icons.comment_rounded,
-                                                size: 18,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                            Text('$newCommentCount comments'),
-                                          ],
-                                        );
-                                      }
+                                            return Row(
+                                              children: [
+                                                const Padding(
+                                                  padding: EdgeInsets.only(right: 3),
+                                                  child: Icon(
+                                                    Icons.comment_rounded,
+                                                    size: 18,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                                Text('$newCommentCount comments'),
+                                              ],
+                                            );
+                                          }
 
-                                      return Text('$commentCount comments');
-                                    }),
+                                          return Text('$commentCount comments');
+                                        }),
+                                    if (!ticket.isOpen && !isExpanded)
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 6.0),
+                                        child: Text(
+                                          '· closed',
+                                          style: TextStyle(
+                                              fontStyle: FontStyle.italic,
+                                              color: Color.fromARGB(255, 80, 80, 80)),
+                                        ),
+                                      )
+                                  ],
+                                ),
                               ),
                               ticket.ownerId == FirebaseAuth.instance.currentUser!.uid
                                   ? SizedBox(
