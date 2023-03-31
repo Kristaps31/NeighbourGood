@@ -16,6 +16,7 @@ dependencies:
   jiffy: ^5.0.0
   image_picker: ^0.8.7+1
   firebase_storage: ^11.0.16
+  tuple: ^2.0.1
   confirm_dialog: ^1.0.1
   fluttertoast: ^8.2.1
 

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:neighbour_good/utils/form_validation.dart';
 import 'package:neighbour_good/widgets/dropdown_category.dart';
 
@@ -70,9 +69,9 @@ class _NewTicketScreenState extends State<NewTicketScreen> {
       User? user = FirebaseAuth.instance.currentUser;
       await FirebaseFirestore.instance.collection('tickets').doc().set({
         'owner_id': user?.uid,
-        'title': ticketTitle.text,
+        'title': ticketTitle.text.trim(),
         'category': _categoryName,
-        'description': ticketDescription.text,
+        'description': ticketDescription.text.trim(),
         'is_opened': true,
         'created_at': DateTime.now().toUtc(),
         'type': widget.type,

@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:neighbour_good/models/ticket.dart';
 import 'package:neighbour_good/models/user.dart';
 import 'package:neighbour_good/widgets/ticket_card.dart';
+import 'package:tuple/tuple.dart';
+
+import '../models/comment.dart';
 
 class PostsListPage extends StatelessWidget {
   final String type;
@@ -49,19 +52,29 @@ class PostsListPage extends StatelessWidget {
           }
 
           return ListView.builder(
-              padding: const EdgeInsets.only(bottom: 70, top: 12),
+              padding: const EdgeInsets.only(bottom: 70),
               itemCount: docs.length,
               itemBuilder: (context, index) {
                 final data = docs[index];
                 Ticket ticket = Ticket.fromFirestore(data);
 
-                return FutureBuilder<UserModel>(
-                  future: UserModel.loadUserDetails(ticket.ownerId),
+                Future<Tuple2<UserModel, int>> combinedFuture = Future.wait([
+                  UserModel.loadUserDetails(ticket.ownerId),
+                  CommentModel.getCommentCount(ticket.id)
+                ]).then((results) =>
+                    Tuple2<UserModel, int>(results[0] as UserModel, results[1] as int));
+
+                return FutureBuilder<Tuple2<UserModel, int>>(
+                  future: combinedFuture,
                   builder: (context, snapshot) {
-                    if (snapshot.hasData) {
+                    if (snapshot.hasData && snapshot.data!.item1.name != '') {
+                      UserModel user = snapshot.data!.item1;
+                      int commentCount = snapshot.data!.item2;
+
                       return TicketCard(
                         ticket: ticket,
-                        user: snapshot.data!,
+                        user: user,
+                        commentCount: commentCount,
                         parentContext: parentContext,
                       );
                     } else {

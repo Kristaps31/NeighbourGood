@@ -45,12 +45,12 @@ class _HomePageState extends State<HomePage> {
             ),
             appBar: AppBar(
               title: null,
-              bottom: const PreferredSize(
-                preferredSize: Size(double.infinity, -18),
+              bottom: PreferredSize(
+                preferredSize: const Size(double.infinity, -18),
                 child: TabBar(
-                  labelColor: Color.fromARGB(255, 10, 74, 126),
-                  unselectedLabelColor: Color.fromARGB(255, 130, 130, 130),
-                  tabs: [
+                  labelColor: Theme.of(context).primaryColor,
+                  unselectedLabelColor: const Color.fromARGB(255, 130, 130, 130),
+                  tabs: const [
                     Padding(padding: EdgeInsets.only(top: 6, bottom: 6), child: Text('Offers')),
                     Padding(padding: EdgeInsets.only(top: 6, bottom: 6), child: Text('Pledges')),
                     Padding(padding: EdgeInsets.only(top: 6, bottom: 6), child: Text('My Posts')),
@@ -58,12 +58,12 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            body: const TabBarView(
+            body: TabBarView(
               children: [
                 // pages
-                PostsListPage(type: "offers"),
-                PostsListPage(type: 'pledges'),
-                PostsListPage(type: 'my_posts'),
+                Container(color: Colors.white, child: const PostsListPage(type: "offers")),
+                const PostsListPage(type: 'pledges'),
+                const PostsListPage(type: 'my_posts'),
               ],
             ),
           ),
