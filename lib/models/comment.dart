@@ -70,8 +70,9 @@ class CommentModel {
         .collection('tickets')
         .doc(ticketId)
         .collection('comments')
+        .count()
         .get()
-        .then((querySnapshot) => querySnapshot.size);
+        .then((querySnapshot) => querySnapshot.count);
   }
 
   static Stream<int> commentCountStream(String ticketId) {
