@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 
 import '../models/comment.dart';
 import '../models/user.dart';
@@ -37,7 +36,7 @@ class TicketComments extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: docs.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (parentContext, index) {
                 final data = docs[index];
                 CommentModel comment = CommentModel.fromFirestore(data);
 
@@ -47,9 +46,17 @@ class TicketComments extends StatelessWidget {
                     if (snapshot.hasData) {
                       UserModel user = snapshot.data!;
 
-                      return TicketComment(user: user, comment: comment);
+                      return TicketComment(
+                          user: user,
+                          comment: comment,
+                          ticketId: ticketId,
+                          parentContext: parentContext);
                     } else {
-                      return Container();
+                      return TicketComment(
+                          user: UserModel.empty(),
+                          comment: comment,
+                          ticketId: ticketId,
+                          parentContext: parentContext);
                     }
                   },
                 );
