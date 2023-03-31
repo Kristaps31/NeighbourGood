@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
 // ignore_for_file: non_constant_identifier_names
 
-class User {
+class Profile {
   final String id;
   final String name;
   final String about_me;
@@ -13,15 +14,16 @@ class User {
   // ignore: prefer_typing_uninitialized_variables
   final created_at;
 
-  User(
-      {required this.id,
-      required this.name,
-      required this.about_me,
-      required this.img,
-      required this.upVoters,
-      required this.dob,
-      required this.street,
-      required this.created_at});
+  Profile({
+    required this.id,
+    required this.name,
+    required this.about_me,
+    required this.img,
+    required this.upVoters,
+    required this.dob,
+    required this.street,
+    required this.created_at,
+  });
 }
 
 class UserModel {
@@ -56,5 +58,26 @@ class UserModel {
         .get();
     UserModel user = UserModel.fromFirestore(response);
     return user;
+  }
+
+  static Future<AggregateQuerySnapshot> getVoteCount(String profileId) {
+    return FirebaseFirestore.instance
+        .collection('profiles')
+        .doc(profileId)
+        .collection('upVoters')
+        .count()
+        .get();
+  }
+
+  static Future<DocumentSnapshot<Map<String, dynamic>>> updateVoteCount(
+    profileId,
+    userId,
+  ) {
+    return FirebaseFirestore.instance
+        .collection('profiles')
+        .doc(profileId)
+        .collection('upVoters')
+        .doc(userId)
+        .get();
   }
 }

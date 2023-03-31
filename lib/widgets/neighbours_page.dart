@@ -37,7 +37,7 @@ class _NeighboursPageState extends State<NeighboursPage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => UserScreen(
-                                      user: User(
+                                      user: Profile(
                                     id: docs[index].id,
                                     name: data['name'],
                                     about_me: data['about_me'] ?? "No Info provided",
