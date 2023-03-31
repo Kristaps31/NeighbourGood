@@ -1,17 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 // ignore_for_file: non_constant_identifier_names
 
 class User {
   final String id;
   final String name;
   final String about_me;
-  final int rating;
+  late final int upVoters;
   final String dob;
   final String street;
+  final String img;
   // ignore: prefer_typing_uninitialized_variables
   final created_at;
 
-  User({required this.id, required this.name, required this.about_me, required this.rating, required this.dob, required this.street, required this.created_at});
+  User(
+      {required this.id,
+      required this.name,
+      required this.about_me,
+      required this.img,
+      required this.upVoters,
+      required this.dob,
+      required this.street,
+      required this.created_at});
 }
 
 class UserModel {

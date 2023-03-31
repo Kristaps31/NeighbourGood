@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neighbour_good/screens/my_profile_screen.dart';
 import 'package:neighbour_good/profile/createProfile.dart';
+import 'package:neighbour_good/widgets/report_issue_screen.dart';
 
 import '../login/loginScreen.dart';
 
@@ -37,7 +38,7 @@ class _ProfileMenuDrawerState extends State<ProfileMenuDrawer> {
           child: DrawerHeader(
             decoration: BoxDecoration(color: Colors.blue),
             child: Text(
-              'Profile Menu',
+              'Menu',
               style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
