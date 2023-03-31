@@ -135,7 +135,7 @@ class TicketCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Padding(
@@ -150,7 +150,19 @@ class TicketCard extends StatelessWidget {
                                       if (snapshot.hasData) {
                                         final newCommentCount = snapshot.data!;
 
-                                        return Text('$newCommentCount comments');
+                                        return Row(
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.only(right: 3),
+                                              child: Icon(
+                                                Icons.comment_rounded,
+                                                size: 18,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                            Text('$newCommentCount comments'),
+                                          ],
+                                        );
                                       }
 
                                       return Text('$commentCount comments');
