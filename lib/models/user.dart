@@ -11,7 +11,14 @@ class User {
   // ignore: prefer_typing_uninitialized_variables
   final created_at;
 
-  User({required this.id, required this.name, required this.about_me, required this.rating, required this.dob, required this.street, required this.created_at});
+  User(
+      {required this.id,
+      required this.name,
+      required this.about_me,
+      required this.rating,
+      required this.dob,
+      required this.street,
+      required this.created_at});
 }
 
 class UserModel {
@@ -35,8 +42,11 @@ class UserModel {
   }
 
   static Future<UserModel> loadUserDetails(String ownerId) async {
-    DocumentSnapshot<Map<String, dynamic>> response =
-        await FirebaseFirestore.instance.collection('profiles').doc(ownerId).get();
+    DocumentSnapshot<Map<String, dynamic>> response = await FirebaseFirestore
+        .instance
+        .collection('profiles')
+        .doc(ownerId)
+        .get();
     UserModel user = UserModel.fromFirestore(response);
     return user;
   }
