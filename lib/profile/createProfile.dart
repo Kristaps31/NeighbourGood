@@ -51,7 +51,7 @@ class _CreateProfileState extends State<CreateProfile> {
             street = snapshot.data()!['street'];
             img = snapshot.data()!['img'];
             rating = snapshot.data()!['rating'] ?? 0;
-            about = snapshot.data()!['about_me'] ?? 'No Info provided';
+            about = snapshot.data()!['about_me'] ?? '';
           });
         }
       });
@@ -365,7 +365,7 @@ class _CreateProfileState extends State<CreateProfile> {
                           Expanded(
                             child: Center(
                               child: Text(
-                                about.trim(),
+                                about == '' ? 'No Info provided' : about.trim(),
                                 style: TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold),
                               ),
@@ -380,6 +380,7 @@ class _CreateProfileState extends State<CreateProfile> {
                         autofocus: true,
                         textAlign: TextAlign.center,
                         decoration: InputDecoration(
+                          hintText: 'Write Here',
                           border: InputBorder.none,
                         ),
                         initialValue: about,
@@ -406,7 +407,10 @@ class _CreateProfileState extends State<CreateProfile> {
                             return setState(() => {
                                   aboutEditable = false,
                                   about = value,
-                                  update.update({'about_me': value})
+                                  update.update({
+                                    'about_me':
+                                        value == '' ? 'No Info provided' : value
+                                  })
                                 });
                           }
                           return setState(() {
