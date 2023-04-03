@@ -30,26 +30,19 @@ class _NeighboursPageState extends State<NeighboursPage> {
             return ListView.builder(
                 itemCount: docs.length,
                 itemBuilder: (context, index) {
-                  final data = docs[index].data();
+                  final data = docs[index];
+                  UserModel user = UserModel.fromFirestore(data);
+                  debugPrint(user.toString());
                   return ListTile(
                     onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => UserScreen(
-                                      user: Profile(
-                                    id: docs[index].id,
-                                    name: data['name'],
-                                    about_me: data['about_me'] ?? "No Info provided",
-                                    upVoters:
-                                        data['upVoters'] == null ? 0 : data['upVoters'].length,
-                                    dob: data['dob'] ?? "No Info provided",
-                                    street: data['street'] ?? "address unavailable",
-                                    created_at: data['created_at'] ?? "Not available",
-                                    img: data['img'],
-                                  ))));
+                                      user: user
+                                      )));
                     },
-                    title: Text(data["name"] ?? ''),
+                    title: Text(user.name),
                   );
                 });
           }

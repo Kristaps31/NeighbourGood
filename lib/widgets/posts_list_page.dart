@@ -10,8 +10,9 @@ import '../models/comment.dart';
 
 class PostsListPage extends StatelessWidget {
   final String type;
+  final String profileId;
 
-  const PostsListPage({Key? key, required this.type}) : super(key: key);
+  const PostsListPage({Key? key, required this.type, this.profileId = ''}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,11 @@ class PostsListPage extends StatelessWidget {
       typeField = 'owner_id';
       equalTo = FirebaseAuth.instance.currentUser?.uid ?? '';
       emptyListMessage = "You don't have any posts yet";
+    }
+     if (type == 'profile_posts') {
+      typeField = 'owner_id';
+      equalTo = profileId;
+      emptyListMessage = "Don't have any posts yet";
     }
 
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(

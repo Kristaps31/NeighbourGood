@@ -1,13 +1,15 @@
 // ignore_for_file: non_constant_identifier_names, deprecated_member_use
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:neighbour_good/screens/user_posts_screen.dart';
 import '/models/user.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 class UserScreen extends StatefulWidget {
-  final Profile user;
+  final UserModel user;
 
   const UserScreen({Key? key, required this.user}) : super(key: key);
 
@@ -113,7 +115,7 @@ class _UserScreenState extends State<UserScreen> {
                       const Text('Member Since: '),
                       Text(
                         DateFormat('dd/MM/yyyy')
-                            .format(widget.user.created_at.toDate()),
+                            .format(widget.user.createdAt.toDate()),
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       )
                     ]),
@@ -146,7 +148,7 @@ class _UserScreenState extends State<UserScreen> {
                     width: 2.0,
                     color: Color.fromARGB(255, 186, 182, 182),
                     style: BorderStyle.solid)),
-            child: Text('About me: ${widget.user.about_me}'),
+            child: Text('About me: ${widget.user.aboutMe == '' ? 'No info provided' : widget.user.aboutMe}'),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -164,7 +166,9 @@ class _UserScreenState extends State<UserScreen> {
               ),
               const SizedBox(width: 20),
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(CupertinoPageRoute(builder: (context)=> UserPostsScreen(user: widget.user)));
+                },
                 style: OutlinedButton.styleFrom(
                   primary: Colors.black,
                   side: const BorderSide(color: Colors.purple),
