@@ -1,12 +1,13 @@
 // ignore_for_file: non_constant_identifier_names, deprecated_member_use
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '/models/user.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
-import '/models/upVoteUser.dart';
 
 class UserScreen extends StatefulWidget {
-  final User user;
+  final Profile user;
 
   const UserScreen({Key? key, required this.user}) : super(key: key);
 
@@ -15,14 +16,59 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
-late User _user;
+  late int _commentCount = -1;
 
-@override
- void initState() {
-  super.initState();
-  _user = widget.user;
- }
+  @override
+  void initState() {
+    super.initState();
+    getCommentCount();
+  }
 
+  void getCommentCount() {
+    UserModel.getVoteCount(widget.user.id).then((data) {
+      setState(() {
+        _commentCount = data.count;
+      });
+    }).catchError((error) {
+      setState(() {
+        _commentCount = 0;
+      });
+    });
+  }
+
+  void increaseCommentCount(int increaseBy) {
+    setState(() {
+      _commentCount = _commentCount + increaseBy;
+    });
+  }
+
+  void onTheVoteHandler() {
+    UserModel.updateVoteCount(
+            widget.user.id, FirebaseAuth.instance.currentUser!.uid)
+        .then((data) {
+      if (!data.exists) {
+        FirebaseFirestore.instance
+            .collection('profiles')
+            .doc(widget.user.id)
+            .collection('upVoters')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .set({})
+            .then((value){
+              increaseCommentCount(1);
+            });
+      } else {
+            FirebaseFirestore.instance
+            .collection('profiles')
+            .doc(widget.user.id)
+            .collection('upVoters')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .delete()
+            .then((value){
+              increaseCommentCount(-1);
+            });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,12 +121,12 @@ late User _user;
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text('Rating: '),
-                        Text('${_user.upVoters}',
+                        Text(_commentCount != -1 ? '$_commentCount' : ' ',
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 20)),
                         TextButton(
-                            onPressed: () async {
-                             await upVotesUser(widget.user.id);
+                            onPressed: () {
+                              onTheVoteHandler();
                             },
                             child: const Text('👍',
                                 style: TextStyle(
