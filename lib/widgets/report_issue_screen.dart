@@ -64,37 +64,48 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Report an issue')),
-      body: Column(
-        children: [
-          TextFormField(
-              controller: reportIssueTitle,
-              decoration: const InputDecoration(
-                  label: Text('Title'),
-                  hintText: 'Enter issue',
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.only(bottom: 10, left: 15)),
-              validator: validateNotEmpty,
-              maxLength: 40),
-          DropdownIssueType(
-              onIssueChanged: _onIssueChanged,
-              issueCategory: _issueCategory,
-              issueCategories: _issueCategories),
-          const SizedBox(
-            height: 20,
+      body: GestureDetector(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                    controller: reportIssueTitle,
+                    decoration: const InputDecoration(
+                        label: Text('Title'),
+                        hintText: 'Enter issue',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.only(bottom: 10, left: 15)),
+                    validator: validateNotEmpty,
+                    maxLength: 40),
+              ),
+              DropdownIssueType(
+                  onIssueChanged: _onIssueChanged,
+                  issueCategory: _issueCategory,
+                  issueCategories: _issueCategories),
+              const SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: reportIssueDescription,
+                  maxLines: 5,
+                  keyboardType: TextInputType.multiline,
+                  decoration: const InputDecoration(
+                      label: Text('Issue'),
+                      hintText: 'Issue description',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.only(bottom: 10, left: 15)),
+                  validator: validateNotEmpty,
+                ),
+              ),
+              ElevatedButton(
+                  onPressed: submitIssue, child: const Text('Submit'))
+            ],
           ),
-          TextFormField(
-            controller: reportIssueDescription,
-            maxLines: 5,
-            keyboardType: TextInputType.multiline,
-            decoration: const InputDecoration(
-                label: Text('Issue'),
-                hintText: 'Description',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.only(bottom: 10, left: 15)),
-            validator: validateNotEmpty,
-          ),
-          ElevatedButton(onPressed: submitIssue, child: const Text('Submit'))
-        ],
+        ),
       ),
     );
   }
