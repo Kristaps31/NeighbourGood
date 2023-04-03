@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:neighbour_good/screens/user_screen.dart';
-import '/models/user.dart';
+
+import '../models/user.dart';
 
 class NeighboursPage extends StatefulWidget {
   const NeighboursPage({Key? key}) : super(key: key);

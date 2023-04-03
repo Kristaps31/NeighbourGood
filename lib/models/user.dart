@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 // ignore_for_file: non_constant_identifier_names
 
 class User {
@@ -49,11 +48,8 @@ class UserModel {
   }
 
   static Future<UserModel> loadUserDetails(String ownerId) async {
-    DocumentSnapshot<Map<String, dynamic>> response = await FirebaseFirestore
-        .instance
-        .collection('profiles')
-        .doc(ownerId)
-        .get();
+    DocumentSnapshot<Map<String, dynamic>> response =
+        await FirebaseFirestore.instance.collection('profiles').doc(ownerId).get();
     UserModel user = UserModel.fromFirestore(response);
     return user;
   }

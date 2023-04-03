@@ -94,7 +94,7 @@ class TicketCard extends StatelessWidget {
                               ),
                               const Text(' · '),
                               Text(
-                                ticket.type == 'help' ? 'asked for help ' : 'offered help ',
+                                ticket.type == 'help' ? 'asked for help' : 'offered help',
                                 style: const TextStyle(
                                     color: Color.fromARGB(255, 80, 80, 80), fontSize: 13),
                               ),
@@ -140,69 +140,88 @@ class TicketCard extends StatelessWidget {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(right: 5),
-                                child: StreamBuilder<int>(
-                                    stream: CommentModel.commentCountStream(ticket.id),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasError) {
-                                        return const Text('Something went wrong..');
-                                      }
+                                child: Row(
+                                  children: [
+                                    StreamBuilder<int>(
+                                        stream: CommentModel.commentCountStream(ticket.id),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasError) {
+                                            return const Text('Something went wrong..');
+                                          }
 
-                                      if (snapshot.hasData) {
-                                        final newCommentCount = snapshot.data!;
+                                          if (snapshot.hasData) {
+                                            final newCommentCount = snapshot.data!;
 
-                                        return Row(
-                                          children: [
-                                            const Padding(
-                                              padding: EdgeInsets.only(right: 3),
-                                              child: Icon(
-                                                Icons.comment_rounded,
-                                                size: 18,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                            Text('$newCommentCount comments'),
-                                          ],
-                                        );
-                                      }
+                                            return Row(
+                                              children: [
+                                                const Padding(
+                                                  padding: EdgeInsets.only(right: 3),
+                                                  child: Icon(
+                                                    Icons.comment_rounded,
+                                                    size: 18,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                                Text(
+                                                    '$newCommentCount comment${commentCount != 1 ? 's' : ''}'),
+                                              ],
+                                            );
+                                          }
 
-                                      return Text('$commentCount comments');
-                                    }),
+                                          return Text(
+                                              '$commentCount comment${commentCount != 1 ? 's' : ''}');
+                                        }),
+                                    if (!ticket.isOpen && !isExpanded)
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 6.0),
+                                        child: Text(
+                                          '· closed',
+                                          style: TextStyle(
+                                              fontStyle: FontStyle.italic,
+                                              color: Color.fromARGB(255, 80, 80, 80)),
+                                        ),
+                                      )
+                                  ],
+                                ),
                               ),
                               ticket.ownerId == FirebaseAuth.instance.currentUser!.uid
-                                  ? SizedBox(
-                                      height: 23,
-                                      width: 30,
-                                      child: TextButton(
-                                          style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                                          onPressed: () {
-                                            showDialog(
-                                                context: parentContext,
-                                                builder: (context) => AlertDialog(
-                                                      title: const Text("Confirm"),
-                                                      content: Text(
-                                                          "Are you sure you would like to delete ${ticket.title} post?"),
-                                                      actions: [
-                                                        TextButton(
-                                                          child: const Text("Cancel"),
-                                                          onPressed: () {
-                                                            Navigator.pop(context);
-                                                          },
-                                                        ),
-                                                        TextButton(
-                                                          child: const Text("Yes"),
-                                                          onPressed: () {
-                                                            ticket.removeTicket(parentContext);
-                                                            Navigator.pop(context);
-                                                          },
-                                                        ),
-                                                      ],
-                                                    ));
-                                          },
-                                          child: const Icon(
-                                            Icons.delete_forever,
-                                            color: Colors.red,
-                                            size: 25,
-                                          )),
+                                  ? Visibility(
+                                      visible: !isExpanded,
+                                      child: SizedBox(
+                                        height: 23,
+                                        width: 30,
+                                        child: TextButton(
+                                            style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                                            onPressed: () {
+                                              showDialog(
+                                                  context: parentContext,
+                                                  builder: (context) => AlertDialog(
+                                                        title: const Text("Confirm"),
+                                                        content: Text(
+                                                            "Are you sure you would like to delete ${ticket.title} post?"),
+                                                        actions: [
+                                                          TextButton(
+                                                            child: const Text("Cancel"),
+                                                            onPressed: () {
+                                                              Navigator.pop(context);
+                                                            },
+                                                          ),
+                                                          TextButton(
+                                                            child: const Text("Yes"),
+                                                            onPressed: () {
+                                                              ticket.removeTicket(parentContext);
+                                                              Navigator.pop(context);
+                                                            },
+                                                          ),
+                                                        ],
+                                                      ));
+                                            },
+                                            child: const Icon(
+                                              Icons.delete_forever,
+                                              color: Colors.red,
+                                              size: 25,
+                                            )),
+                                      ),
                                     )
                                   : SizedBox(
                                       height: 20,

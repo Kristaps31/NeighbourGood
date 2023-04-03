@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:neighbour_good/models/comment.dart';
@@ -23,6 +24,9 @@ class TicketDetailsScreen extends StatefulWidget {
 class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
   final ScrollController _scrollController = ScrollController();
   final _messageController = TextEditingController();
+  late Stream<DocumentSnapshot<Map<String, dynamic>>> _stream;
+  late bool _isOpened = widget.ticket.isOpen;
+
   final double _appBarVisibleHeight = 15.0;
 
   bool _isSendButtonDisabled = true;
@@ -33,6 +37,15 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
     super.initState();
     _messageController.addListener(_onMessageChanged);
     _scrollController.addListener(_onScroll);
+
+    _stream = widget.ticket.listenToTicketStatus();
+    _stream.listen((DocumentSnapshot<Map<String, dynamic>> querySnapshot) {
+      if (mounted) {
+        setState(() {
+          _isOpened = querySnapshot.data()!['is_opened'] ?? true;
+        });
+      }
+    });
   }
 
   void _onScroll() {
@@ -70,13 +83,32 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _stream.drain();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        centerTitle: true,
-        title: Text(_isAppBarVisible ? widget.ticket.title : ''),
+        title: Text(_isAppBarVisible
+            ? widget.ticket.type == 'help'
+                ? 'Help request'
+                : 'Offer'
+            : ''),
+        actions: [
+          Visibility(
+            visible: FirebaseAuth.instance.currentUser!.uid == widget.ticket.ownerId,
+            child: TextButton(
+                child: Text(_isOpened == true ? 'Mark as closed' : 'Reopen'),
+                onPressed: () {
+                  widget.ticket.changeTicketStatus();
+                }),
+          )
+        ],
         elevation: 0,
       ),
       body: GestureDetector(
@@ -113,52 +145,65 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                 ),
                 child: Padding(
                     padding: const EdgeInsets.only(left: 10, right: 0, top: 5, bottom: 5),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: TextFormField(
-                          controller: _messageController,
-                          maxLines: 4,
-                          minLines: 1,
-                          decoration: InputDecoration(
-                            hintText: 'Type your comment...',
-                            hintStyle: const TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.w400, color: Colors.grey),
-                            contentPadding: const EdgeInsets.all(10),
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(24),
-                              borderSide: const BorderSide(
-                                width: 0.5, // Change this value to adjust the border width
-                                color: Color.fromARGB(255, 216, 216, 216),
-                              ),
+                    child: !_isOpened
+                        ? SizedBox(
+                            height: 47.5,
+                            width: double.infinity,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text('This thread is closed'),
+                              ],
                             ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(24),
-                              borderSide: BorderSide(
-                                width: 1, // Change this value to adjust the border width
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(24),
-                              borderSide: const BorderSide(
-                                width: 0.5, // Change this value to adjust the border width
-                                color: Color.fromARGB(255, 216, 216, 216),
-                              ),
-                            ),
-                          ),
-                        )),
-                        TextButton(
-                            onPressed: _isSendButtonDisabled
-                                ? null
-                                : () {
-                                    _sendMessage(context);
-                                  },
-                            child: const Icon(Icons.send))
-                      ],
-                    )),
+                          )
+                        : Row(
+                            children: [
+                              Expanded(
+                                  child: TextFormField(
+                                controller: _messageController,
+                                maxLines: 4,
+                                minLines: 1,
+                                decoration: InputDecoration(
+                                  hintText: 'Type your comment...',
+                                  hintStyle: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.grey),
+                                  contentPadding: const EdgeInsets.all(10),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                    borderSide: const BorderSide(
+                                      width: 0.5, // Change this value to adjust the border width
+                                      color: Color.fromARGB(255, 216, 216, 216),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                    borderSide: BorderSide(
+                                      width: 1, // Change this value to adjust the border width
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                    borderSide: const BorderSide(
+                                      width: 0.5, // Change this value to adjust the border width
+                                      color: Color.fromARGB(255, 216, 216, 216),
+                                    ),
+                                  ),
+                                ),
+                              )),
+                              TextButton(
+                                  onPressed: _isSendButtonDisabled
+                                      ? null
+                                      : () {
+                                          _sendMessage(context);
+                                        },
+                                  child: const Icon(Icons.send))
+                            ],
+                          )),
               ),
             )
           ],
