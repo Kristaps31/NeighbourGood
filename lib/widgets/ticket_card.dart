@@ -185,40 +185,43 @@ class TicketCard extends StatelessWidget {
                                 ),
                               ),
                               ticket.ownerId == FirebaseAuth.instance.currentUser!.uid
-                                  ? SizedBox(
-                                      height: 23,
-                                      width: 30,
-                                      child: TextButton(
-                                          style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                                          onPressed: () {
-                                            showDialog(
-                                                context: parentContext,
-                                                builder: (context) => AlertDialog(
-                                                      title: const Text("Confirm"),
-                                                      content: Text(
-                                                          "Are you sure you would like to delete ${ticket.title} post?"),
-                                                      actions: [
-                                                        TextButton(
-                                                          child: const Text("Cancel"),
-                                                          onPressed: () {
-                                                            Navigator.pop(context);
-                                                          },
-                                                        ),
-                                                        TextButton(
-                                                          child: const Text("Yes"),
-                                                          onPressed: () {
-                                                            ticket.removeTicket(parentContext);
-                                                            Navigator.pop(context);
-                                                          },
-                                                        ),
-                                                      ],
-                                                    ));
-                                          },
-                                          child: const Icon(
-                                            Icons.delete_forever,
-                                            color: Colors.red,
-                                            size: 25,
-                                          )),
+                                  ? Visibility(
+                                      visible: !isExpanded,
+                                      child: SizedBox(
+                                        height: 23,
+                                        width: 30,
+                                        child: TextButton(
+                                            style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                                            onPressed: () {
+                                              showDialog(
+                                                  context: parentContext,
+                                                  builder: (context) => AlertDialog(
+                                                        title: const Text("Confirm"),
+                                                        content: Text(
+                                                            "Are you sure you would like to delete ${ticket.title} post?"),
+                                                        actions: [
+                                                          TextButton(
+                                                            child: const Text("Cancel"),
+                                                            onPressed: () {
+                                                              Navigator.pop(context);
+                                                            },
+                                                          ),
+                                                          TextButton(
+                                                            child: const Text("Yes"),
+                                                            onPressed: () {
+                                                              ticket.removeTicket(parentContext);
+                                                              Navigator.pop(context);
+                                                            },
+                                                          ),
+                                                        ],
+                                                      ));
+                                            },
+                                            child: const Icon(
+                                              Icons.delete_forever,
+                                              color: Colors.red,
+                                              size: 25,
+                                            )),
+                                      ),
                                     )
                                   : SizedBox(
                                       height: 20,
