@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:neighbour_good/models/chat.dart';
 import 'package:neighbour_good/models/chat_message.dart';
+import 'package:neighbour_good/models/user.dart';
+import 'package:neighbour_good/screens/chat_screen.dart';
 
 class ChatItem extends StatelessWidget {
   final Chat chat;
@@ -25,43 +28,55 @@ class ChatItem extends StatelessWidget {
         if (snapshot.hasData) {
           final docs = snapshot.data!.docs[0];
           final ChatMessage chatMessage = ChatMessage.fromFirestore(docs);
-          return Container(
-            padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
-            child: Row(
-              children: <Widget>[
-                CircleAvatar(
-                  backgroundColor: Colors.amber,
-                  maxRadius: 30,
-                ),
-                SizedBox(
-                  width: 16,
-                ),
-                Expanded(
-                    child: Container(
-                  color: Colors.transparent,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(children: [
-                        Text("John Smith"),
-                        const SizedBox(width: 110),
-                        Text(
-                          Jiffy(chatMessage.createdAt.toDate()).fromNow(),
-                          style: const TextStyle(
-                              color: Color.fromARGB(255, 80, 80, 80),
-                              ),
-                        ),
-                      ]),
-                      Text(
-                        chatMessage.message,
-                        style: TextStyle(
-                            fontSize: 14, color: Colors.grey.shade500),
+          return FutureBuilder<UserModel>(
+            future: UserModel.loadUserDetails(chatPartnerId),
+            builder: (context, snapshot) {
+              if(snapshot.hasData){
+                UserModel user = snapshot.data!;
+              return GestureDetector (
+                onTap:() {Navigator.of(context).push(CupertinoPageRoute(builder: (context) => ChatScreen(chat: chat)));},
+                child: Container(
+                  padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+                  child: Row(
+                    children: <Widget>[
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(user.img),
+                        maxRadius: 30,
                       ),
+                      SizedBox(
+                        width: 16,
+                      ),
+                      Expanded(
+                          child: Container(
+                        color: Colors.transparent,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                              Text(user.name),
+                              Text(
+                                Jiffy(chatMessage.createdAt.toDate()).fromNow(),
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 80, 80, 80),
+                                    ),
+                              ),
+                            ]),
+                            Text(
+                              chatMessage.message,
+                              style: TextStyle(
+                                  fontSize: 14, color: Colors.grey.shade500),
+                            ),
+                          ],
+                        ),
+                      ))
                     ],
                   ),
-                ))
-              ],
-            ),
+                ),
+              );
+              }
+              return const Center(child: CircularProgressIndicator());
+            }
           );
         }
         return const Center(child: CircularProgressIndicator());

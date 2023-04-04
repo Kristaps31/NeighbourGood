@@ -32,4 +32,14 @@ class Chat {
     .limit(1)
     .snapshots();
   }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(){
+    return FirebaseFirestore.instance
+    .collection('chats')
+    .doc(id)
+    .collection("messages")
+    .orderBy("created_at", )
+    .snapshots();
+  }
+
 }

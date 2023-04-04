@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:neighbour_good/models/chat.dart';
+import 'package:neighbour_good/screens/chat_screen.dart';
 import 'package:neighbour_good/screens/user_posts_screen.dart';
 import '/models/user.dart';
 // ignore: depend_on_referenced_packages
@@ -154,7 +156,11 @@ class _UserScreenState extends State<UserScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  final String myId = FirebaseAuth.instance.currentUser!.uid;
+                  final String chatId = myId+widget.user.id;
+                   Navigator.of(context).push(CupertinoPageRoute(builder: (context)=> ChatScreen(chat: Chat(id: chatId, sender1: myId, sender2: widget.user.id))));
+                },
                 style: OutlinedButton.styleFrom(
                   primary: Colors.black,
                   side: const BorderSide(color: Colors.purple),

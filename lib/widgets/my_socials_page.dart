@@ -19,23 +19,23 @@ class MySocialsPage extends StatelessWidget {
                     child: Padding(
                   padding: EdgeInsets.only(left: 16, right: 16, top: 10),
                 )),
-                Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                        hintText: "Search...",
-                        hintStyle: TextStyle(color: Colors.grey.shade400),
-                        prefixIcon: Icon(Icons.search,
-                            color: Colors.grey.shade400, size: 20),
-                        filled: true,
-                        fillColor: Colors.grey.shade100,
-                        contentPadding: EdgeInsets.all(8),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide:
-                                BorderSide(color: Colors.grey.shade100))),
-                  ),
-                ),
+                // Padding(
+                //   padding: EdgeInsets.all(16.0),
+                //   child: TextField(
+                //     decoration: InputDecoration(
+                //         hintText: "Search...",
+                //         hintStyle: TextStyle(color: Colors.grey.shade400),
+                //         prefixIcon: Icon(Icons.search,
+                //             color: Colors.grey.shade400, size: 20),
+                //         filled: true,
+                //         fillColor: Colors.grey.shade100,
+                //         contentPadding: EdgeInsets.all(8),
+                //         enabledBorder: OutlineInputBorder(
+                //             borderRadius: BorderRadius.circular(30),
+                //             borderSide:
+                //                 BorderSide(color: Colors.grey.shade100))),
+                //   ),
+                // ),
                 StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                   stream:
                       Chat.getChatList(FirebaseAuth.instance.currentUser!.uid),
