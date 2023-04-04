@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:neighbour_good/screens/dashboard_screen.dart';
+import 'package:http/http.dart' as http;
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -21,6 +25,40 @@ class _SignupScreenState extends State<SignupScreen> {
   final _dob = TextEditingController();
   final _key = GlobalKey<FormState>();
   String errorMessage = '';
+
+  List<dynamic> _placeList = [];
+  List<dynamic> location = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _street.addListener(() {
+      onChange();
+    });
+  }
+
+  void onChange() {
+    getSuggesion(_street.text);
+  }
+
+  void getSuggesion(String input) async {
+    String street_api = 'AIzaSyAoMmJ543vm2KvkwF-lAAOZ4eOHJ7pXnYc';
+    String baseURl =
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+    String request = '$baseURl?input=$input&key=$street_api';
+    var response = await http.get(Uri.parse(request));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        if (_street.text == '') {
+          _placeList = [];
+        }
+        _placeList = jsonDecode(response.body.toString())['predictions'];
+      });
+    } else {
+      throw Exception('failed to load data');
+    }
+  }
 
   signUp() async {
     if (_key.currentState!.validate()) {
@@ -39,6 +77,7 @@ class _SignupScreenState extends State<SignupScreen> {
           'name': _name.text,
           'created_at': user?.metadata.creationTime,
           'street': _street.text,
+          'location': location,
           'dob': _dob.text,
           'img':
               'https://firebasestorage.googleapis.com/v0/b/neighbour-good.appspot.com/o/blank-profile-picture-g0d85654dd_640.png?alt=media&token=047c8e21-f734-466a-bcc1-9debedb1eab3'
@@ -63,86 +102,119 @@ class _SignupScreenState extends State<SignupScreen> {
         child: Center(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 35),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Signup',
-                  style: GoogleFonts.lato(
-                      fontWeight: FontWeight.bold, fontSize: 32),
-                ),
-                const SizedBox(height: 30),
-                TextFormField(
-                  validator: validateName,
-                  controller: _name,
-                  decoration: const InputDecoration(
-                      hintText: 'Enter your Full Name',
-                      icon: Icon(Icons.mail_lock)),
-                ),
-                TextFormField(
-                  validator: validateEmail,
-                  controller: _email,
-                  decoration: const InputDecoration(
-                      hintText: 'Enter your Email address',
-                      icon: Icon(Icons.mail_lock)),
-                ),
-                TextFormField(
-                    validator: validatePassword,
-                    obscureText: true,
-                    controller: _pass,
-                    decoration: const InputDecoration(
-                        hintText: 'Enter your Your Password',
-                        icon: Icon(Icons.lock))),
-                TextFormField(
-                  validator: validateStreet,
-                  controller: _street,
-                  decoration: const InputDecoration(
-                      hintText: 'Enter your Street address',
-                      icon: Icon(Icons.home)),
-                ),
-                TextFormField(
-                  validator: validateDob,
-                  controller: _dob,
-                  decoration: const InputDecoration(
-                      hintText: 'Enter Date Of Birth(dd/mm/yy) ',
-                      icon: Icon(Icons.calendar_month)),
-                ),
-                Text(
-                  errorMessage,
-                  style: const TextStyle(color: Colors.red),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                ElevatedButton(
-                    onPressed: signUp,
-                    child: Text(
-                      'Signup',
-                      style: GoogleFonts.lato(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    )),
-                const SizedBox(height: 10),
-                Row(
+            child: SingleChildScrollView(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Already have an Account? ",
-                      style: GoogleFonts.lato(fontSize: 16),
+                      'Signup',
+                      style: GoogleFonts.lato(
+                          fontWeight: FontWeight.bold, fontSize: 32),
                     ),
-                    GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
+                    const SizedBox(height: 30),
+                    TextFormField(
+                      validator: validateName,
+                      controller: _name,
+                      decoration: const InputDecoration(
+                          hintText: 'Enter your Full Name',
+                          icon: Icon(Icons.mail_lock)),
+                    ),
+                    TextFormField(
+                      validator: validateEmail,
+                      controller: _email,
+                      decoration: const InputDecoration(
+                          hintText: 'Enter your Email address',
+                          icon: Icon(Icons.mail_lock)),
+                    ),
+                    TextFormField(
+                        validator: validatePassword,
+                        obscureText: true,
+                        controller: _pass,
+                        decoration: const InputDecoration(
+                            hintText: 'Enter your Your Password',
+                            icon: Icon(Icons.lock))),
+                    TextFormField(
+                      validator: validateStreet,
+                      controller: _street,
+                      decoration: const InputDecoration(
+                          hintText: 'Enter your Street address',
+                          icon: Icon(Icons.home)),
+                    ),
+                    _placeList.length < 1
+                        ? Text('')
+                        : Expanded(
+                            child: ListView.builder(
+                                itemCount: _placeList.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    onTap: () async {
+                                      List<Location> getlocation =
+                                          await locationFromAddress(
+                                              _placeList[index]['description']);
+                                      location = [
+                                        getlocation.last.latitude,
+                                        getlocation.last.longitude
+                                      ];
+
+                                      setState(() {
+                                        _street.text =
+                                            _placeList[index]['description'];
+
+                                        _placeList = [];
+                                      });
+                                    },
+                                    title:
+                                        Text(_placeList[index]['description']),
+                                  );
+                                })),
+                    TextFormField(
+                      validator: validateDob,
+                      controller: _dob,
+                      decoration: const InputDecoration(
+                          hintText: 'Enter Date Of Birth(dd/mm/yy) ',
+                          icon: Icon(Icons.calendar_month)),
+                    ),
+                    Text(
+                      errorMessage,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    ElevatedButton(
+                        onPressed: signUp,
                         child: Text(
-                          'Login',
+                          'Signup',
                           style: GoogleFonts.lato(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue),
+                              fontSize: 18, fontWeight: FontWeight.bold),
                         )),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Already have an Account? ",
+                          style: GoogleFonts.lato(fontSize: 16),
+                        ),
+                        GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'Login',
+                              style: GoogleFonts.lato(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue),
+                            )),
+                      ],
+                    )
                   ],
-                )
-              ],
+                ),
+              ),
             ),
           ),
         ),

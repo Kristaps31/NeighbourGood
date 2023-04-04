@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,6 +9,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:geocoding/geocoding.dart';
 
 class CreateProfile extends StatefulWidget {
   const CreateProfile({super.key});
@@ -60,6 +63,28 @@ class _CreateProfileState extends State<CreateProfile> {
     }
   }
 
+  List<dynamic> _placeList = [];
+  List<dynamic> location = [];
+
+  void getSuggesion(String input) async {
+    String street_api = 'AIzaSyAoMmJ543vm2KvkwF-lAAOZ4eOHJ7pXnYc';
+    String baseURl =
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+    String request = '$baseURl?input=$input&key=$street_api';
+    var response = await http.get(Uri.parse(request));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        if (input == '') {
+          _placeList = [];
+        }
+        _placeList = jsonDecode(response.body.toString())['predictions'];
+      });
+    } else {
+      throw Exception('failed to load data');
+    }
+  }
+
   void submit() async {
     try {
       final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -87,6 +112,9 @@ class _CreateProfileState extends State<CreateProfile> {
     _getData();
     fToast = FToast();
     fToast.init(context);
+    // _street.addListener(() {
+    //   onChange();
+    // });
   }
 
   @override
@@ -300,44 +328,108 @@ class _CreateProfileState extends State<CreateProfile> {
                           ),
                         ],
                       )
-                    : TextFormField(
-                        autofocus: true,
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                        ),
-                        initialValue: street,
-                        textInputAction: TextInputAction.done,
-                        onFieldSubmitted: (value) async {
-                          if (await confirm(
-                            context,
-                            title: const Text('Confirm'),
-                            content: const Text('Updating Street Address?'),
-                            textOK: const Text('Yes'),
-                            textCancel: const Text('No'),
-                          )) {
-                            fToast.showToast(
-                              child: Text(
-                                'Street Address successfully updated',
-                                style: TextStyle(
-                                    backgroundColor: Colors.black,
-                                    color: Colors.white,
-                                    fontSize: 18),
+                    : Column(
+                        children: [
+                          TextFormField(
+                              autofocus: true,
+                              textAlign: TextAlign.center,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
                               ),
-                              gravity: ToastGravity.BOTTOM,
-                              toastDuration: Duration(seconds: 2),
-                            );
-                            return setState(() => {
-                                  streetEditable = false,
-                                  street = value,
-                                  update.update({'street': value})
+                              initialValue: street,
+                              onChanged: (value) {
+                                getSuggesion(value);
+                              },
+                              textInputAction: TextInputAction.done,
+                              onFieldSubmitted: (value) async {
+                                if (await confirm(
+                                  context,
+                                  title: const Text('Confirm'),
+                                  content:
+                                      const Text('Updating Street Address?'),
+                                  textOK: const Text('Yes'),
+                                  textCancel: const Text('No'),
+                                )) {
+                                  fToast.showToast(
+                                    child: Text(
+                                      'Street Address successfully updated',
+                                      style: TextStyle(
+                                          backgroundColor: Colors.black,
+                                          color: Colors.white,
+                                          fontSize: 18),
+                                    ),
+                                    gravity: ToastGravity.BOTTOM,
+                                    toastDuration: Duration(seconds: 2),
+                                  );
+                                  return setState(() => {
+                                        streetEditable = false,
+                                        street = value,
+                                      });
+                                }
+                                return setState(() {
+                                  streetEditable = false;
+                                  street = street;
                                 });
-                          }
-                          return setState(() {
-                            streetEditable = false;
-                            street = street;
-                          });
-                        })),
+                              }),
+                          SingleChildScrollView(
+                            child: SizedBox(
+                              height: 140,
+                              child: ListView.builder(
+                                  itemCount: _placeList.length,
+                                  itemBuilder: (context, index) {
+                                    return ListTile(
+                                      onTap: () async {
+                                        List<Location> getlocation =
+                                            await locationFromAddress(
+                                                _placeList[index]
+                                                    ['description']);
+                                        location = [
+                                          getlocation.last.latitude,
+                                          getlocation.last.longitude
+                                        ];
+                                        if (await confirm(
+                                          context,
+                                          title: const Text('Confirm'),
+                                          content: const Text(
+                                              'Updating Street Address?'),
+                                          textOK: const Text('Yes'),
+                                          textCancel: const Text('No'),
+                                        )) {
+                                          fToast.showToast(
+                                            child: Text(
+                                              'Street Address successfully updated',
+                                              style: TextStyle(
+                                                  backgroundColor: Colors.black,
+                                                  color: Colors.white,
+                                                  fontSize: 18),
+                                            ),
+                                            gravity: ToastGravity.BOTTOM,
+                                            toastDuration: Duration(seconds: 2),
+                                          );
+                                          return setState(() {
+                                            streetEditable = false;
+                                            street = _placeList[index]
+                                                ['description'];
+
+                                            update.update({
+                                              'street': street,
+                                              'location': location
+                                            });
+                                          });
+                                        }
+                                        return setState(() {
+                                          streetEditable = false;
+                                          street = street;
+                                        });
+                                      },
+                                      title: Text(
+                                          _placeList[index]['description']),
+                                    );
+                                  }),
+                            ),
+                          ),
+                        ],
+                      )),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
