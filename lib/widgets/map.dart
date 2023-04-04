@@ -1,5 +1,7 @@
 import 'dart:ffi';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -17,27 +19,59 @@ class MapSampleState extends State<MapSample> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+    getLocation();
+  }
+
+  void getLocation() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('profiles')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .get()
+          .then(
+        (snapshot) {
+          if (snapshot.exists) {
+            final lat = snapshot.data()!['location'][0];
+            final lon = snapshot.data()!['location'][1];
+            final profile = snapshot.data()!['name'];
+            final aboutMe = snapshot.data()!['about_me'];
+            mapController.animateCamera(CameraUpdate.newLatLngZoom(
+                LatLng(snapshot.data()!['location'][0],
+                    snapshot.data()!['location'][1]),
+                15));
+            _addMarker(lat, lon, profile, aboutMe);
+          }
+        },
+      );
+    } on FirebaseException catch (e) {
+      debugPrint(e.message);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   MapType _currentMapType = MapType.normal;
 
-  static const CameraPosition _defaultLocation =
-      CameraPosition(target: LatLng(51.496123, -0.136923), zoom: 10);
+  final CameraPosition _defaultLocation =
+      CameraPosition(target: LatLng(1, 1), zoom: 10);
   final Set<Marker> _markers = {};
 
-  void _addMarker() {
+  void _addMarker(double lat, double lon, String profile, String aboutMe) {
     setState(() {
       _markers.add(
         Marker(
           markerId: const MarkerId('default location'),
-          position: _defaultLocation.target,
+          position: LatLng(lat, lon),
           icon: BitmapDescriptor.defaultMarker,
           draggable: true,
           onDragEnd: (value) {},
-          infoWindow: const InfoWindow(
+          infoWindow: InfoWindow(
               //title and snippet on pin to describe it
-              title: 'Test title',
-              snippet: 'Hello i am a test snippet'),
+              title: profile,
+              snippet: aboutMe),
         ),
       );
     });
@@ -50,20 +84,21 @@ class MapSampleState extends State<MapSample> {
     });
   }
 
-  Future<void> _moveLocation() async {
-    const newPosition = LatLng(53.4808, -2.2426);
-    mapController.animateCamera(CameraUpdate.newLatLngZoom(newPosition, 15));
-    setState(() {
-      const marker = Marker(
-        markerId: MarkerId('new location'),
-        position: newPosition,
-        infoWindow: InfoWindow(title: 'test 2', snippet: 'Lalala'),
-      );
-      _markers
-        ..clear()
-        ..add(marker);
-    });
-  }
+  // Future<void> _moveLocation() async {
+  //   const newPosition = LatLng(34.4808, -1.2426);
+  //   mapController.animateCamera(CameraUpdate.newLatLngZoom(newPosition, 15));
+  //   setState(() {
+  //     const marker = Marker(
+  //       markerId: MarkerId('new location'),
+  //       position: newPosition,
+  //       infoWindow: InfoWindow(title: 'test 2', snippet: 'Lalala'),
+  //       draggable: true,
+  //     );
+  //     _markers
+  //       ..clear()
+  //       ..add(marker);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -81,12 +116,12 @@ class MapSampleState extends State<MapSample> {
             alignment: Alignment.topRight,
             child: Column(
               children: <Widget>[
-                FloatingActionButton(
-                    onPressed: _addMarker,
-                    backgroundColor: Color.fromARGB(255, 24, 30, 102),
-                    foregroundColor: Colors.white,
-                    child: const Icon(Icons.add_location),
-                    shape: CircleBorder()),
+                // FloatingActionButton(
+                //     onPressed: _addMarker(lat,lon),
+                //     backgroundColor: Color.fromARGB(255, 24, 30, 102),
+                //     foregroundColor: Colors.white,
+                //     child: const Icon(Icons.add_location),
+                //     shape: CircleBorder()),
                 const SizedBox(
                   height: 5,
                 ),
@@ -100,12 +135,12 @@ class MapSampleState extends State<MapSample> {
                 const SizedBox(
                   height: 5,
                 ),
-                FloatingActionButton(
-                    onPressed: _moveLocation,
-                    backgroundColor: Colors.amber,
-                    foregroundColor: Colors.white,
-                    child: const Icon(Icons.explore_rounded),
-                    shape: CircleBorder())
+                // FloatingActionButton(
+                //     onPressed: _moveLocation,
+                //     backgroundColor: Colors.amber,
+                //     foregroundColor: Colors.white,
+                //     child: const Icon(Icons.explore_rounded),
+                //     shape: CircleBorder())
               ],
             ))
       ],
