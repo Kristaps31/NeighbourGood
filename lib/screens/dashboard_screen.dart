@@ -15,12 +15,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   late int _navIndexSelected;
 
-  List<Widget> pages = const [
-    HomePage(),
-    NeighboursPage(),
-    MySocialsPage(),
-    MapSample()
-  ];
+  List<Widget> pages = const [HomePage(), NeighboursPage(), MySocialsPage(), MapSample()];
   List<String> titles = ["NeighbourGood", "Neighbours", "Messages", "Map"];
 
   @override
@@ -46,17 +41,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         endDrawer: const ProfileMenuDrawer(),
         body: pages[_navIndexSelected],
-        bottomNavigationBar: NavigationBar(
-            destinations: const [
-              NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-              NavigationDestination(
-                  icon: Icon(Icons.people), label: 'Neighbours'),
-              NavigationDestination(
-                  icon: Icon(Icons.message), label: 'My Socials'),
-              NavigationDestination(icon: Icon(Icons.map), label: 'Map'),
-            ],
-            selectedIndex: _navIndexSelected,
-            onDestinationSelected: _onPageChangedHandler),
+        bottomNavigationBar: NavigationBar(destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.people), label: 'Neighbours'),
+          NavigationDestination(icon: Icon(Icons.message), label: 'My Socials'),
+          NavigationDestination(icon: Icon(Icons.map), label: 'Map'),
+        ], selectedIndex: _navIndexSelected, onDestinationSelected: _onPageChangedHandler),
       ),
       onWillPop: () async => false,
     );

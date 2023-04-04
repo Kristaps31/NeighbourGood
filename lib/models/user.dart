@@ -1,44 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// ignore_for_file: non_constant_identifier_names
-
-class Profile {
-  final String id;
-  final String name;
-  final String about_me;
-  late final int upVoters;
-  final String dob;
-  final String street;
-  final String img;
-  // ignore: prefer_typing_uninitialized_variables
-  final created_at;
-
-  Profile({
-    required this.id,
-    required this.name,
-    required this.about_me,
-    required this.img,
-    required this.upVoters,
-    required this.dob,
-    required this.street,
-    required this.created_at,
-  });
-}
-
 class UserModel {
   final String id;
   final String name;
-  final String profileImgUrl;
+  final String aboutMe;
+  final String dob;
+  final String street;
+  final String img;
+  final Timestamp createdAt;
 
-  UserModel({required this.id, this.name = '', required this.profileImgUrl});
+
+  UserModel({
+    required this.id,
+    this.name = "",
+    required this.aboutMe,
+    required this.img,
+    required this.dob,
+    required this.street,
+    required this.createdAt,});
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
     if (doc.exists) {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       return UserModel(
         id: doc.id,
-        name: data['name'],
-        profileImgUrl: data['img'],
+        name: data['name'] ?? '',
+        img: data['img'] ?? '',
+        aboutMe: data['about_me'] ?? "",
+        dob: data['dob'] ?? '',
+        street: data['street'] ?? '',
+        createdAt: data['created_at'] ?? '',
       );
     } else {
       return UserModel.empty();
@@ -46,7 +37,13 @@ class UserModel {
   }
 
   factory UserModel.empty() {
-    return UserModel(id: '', name: '', profileImgUrl: '');
+    return UserModel(id: '',
+        name: '',
+        img: '',
+        aboutMe: '',
+        dob: '',
+        street: '',
+        createdAt: Timestamp.fromDate(DateTime.now()));
   }
 
   static Future<UserModel> loadUserDetails(String ownerId) async {

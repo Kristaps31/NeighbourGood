@@ -8,6 +8,7 @@ import 'package:neighbour_good/widgets/report_issue_screen.dart';
 import 'package:neighbour_good/screens/ticket_details_screen.dart';
 
 import '../models/user.dart';
+import '../screens/user_screen.dart';
 
 class TicketCard extends StatelessWidget {
   const TicketCard(
@@ -52,29 +53,38 @@ class TicketCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                    margin: const EdgeInsets.only(right: 8, top: 0),
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Color.fromARGB(255, 231, 231, 231),
-                    ),
-                    width: 40,
-                    height: 40,
-                    child: user.profileImgUrl.isEmpty
-                        ? Center(
-                            child: Text(
-                            user.name.isNotEmpty ? user.name[0] : '',
-                            style: const TextStyle(fontWeight: FontWeight.w600),
-                          ))
-                        : ClipOval(
-                            child: SizedBox.fromSize(
-                              size: const Size.fromRadius(48), // Image radius
-                              child: Image.network(
-                                user.profileImgUrl,
-                                fit: BoxFit.cover,
+                GestureDetector( onTap: () {
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserScreen(
+                                      user: user
+                                      )));
+                },
+                  child: Container(
+                      margin: const EdgeInsets.only(right: 8, top: 0),
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        color: Color.fromARGB(255, 231, 231, 231),
+                      ),
+                      width: 40,
+                      height: 40,
+                      child: user.img.isEmpty
+                          ? Center(
+                              child: Text(
+                              user.name.isNotEmpty ? user.name[0] : '',
+                              style: const TextStyle(fontWeight: FontWeight.w600),
+                            ))
+                          : ClipOval(
+                              child: SizedBox.fromSize(
+                                size: const Size.fromRadius(48), // Image radius
+                                child: Image.network(
+                                  user.img,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            ),
-                          )),
+                            )),
+                ),
                 Flexible(
                   flex: 1,
                   child: Column(
