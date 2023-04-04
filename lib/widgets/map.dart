@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -11,6 +13,13 @@ class MapSample extends StatefulWidget {
 
 class MapSampleState extends State<MapSample> {
   late GoogleMapController mapController;
+  BitmapDescriptor customMarkerIcon = BitmapDescriptor.defaultMarker;
+
+  @override
+  void initState() {
+    addCustomIcon();
+    super.initState();
+  }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -19,7 +28,7 @@ class MapSampleState extends State<MapSample> {
   MapType _currentMapType = MapType.normal;
 
   static const CameraPosition _defaultLocation =
-      CameraPosition(target: LatLng(51.5072, 0.118092), zoom: 12);
+      CameraPosition(target: LatLng(51.496123, -0.136923), zoom: 10);
   final Set<Marker> _markers = {};
 
   void _addMarker() {
@@ -29,6 +38,8 @@ class MapSampleState extends State<MapSample> {
           markerId: const MarkerId('default location'),
           position: _defaultLocation.target,
           icon: BitmapDescriptor.defaultMarker,
+          draggable: true,
+          onDragEnd: (value) {},
           infoWindow: const InfoWindow(
               //title and snippet on pin to describe it
               title: 'Test title',
@@ -45,11 +56,20 @@ class MapSampleState extends State<MapSample> {
     });
   }
 
-//   Future<void> _moveLocation() async{
-// const _newPosition = LatLng(53.4808°, 2.2426);
-// _googleMapController.animateCamera(CameraUpdate.newLatLngZoom(_newPosition, 15));
-
-//   }
+  Future<void> _moveLocation() async {
+    const newPosition = LatLng(53.4808, -2.2426);
+    mapController.animateCamera(CameraUpdate.newLatLngZoom(newPosition, 15));
+    setState(() {
+      const marker = Marker(
+        markerId: MarkerId('new location'),
+        position: newPosition,
+        infoWindow: InfoWindow(title: 'test 2', snippet: 'Lalala'),
+      );
+      _markers
+        ..clear()
+        ..add(marker);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,23 +88,30 @@ class MapSampleState extends State<MapSample> {
             child: Column(
               children: <Widget>[
                 FloatingActionButton(
-                  onPressed: _addMarker,
-                  backgroundColor: Color.fromARGB(255, 24, 30, 102),
-                  foregroundColor: Colors.white,
-                  child: const Icon(Icons.add_location),
+                    onPressed: _addMarker,
+                    backgroundColor: Color.fromARGB(255, 24, 30, 102),
+                    foregroundColor: Colors.white,
+                    child: const Icon(Icons.add_location),
+                    shape: CircleBorder()),
+                const SizedBox(
+                  height: 5,
                 ),
                 FloatingActionButton(
                   onPressed: _changeMapType,
                   backgroundColor: Color.fromARGB(255, 29, 140, 44),
                   foregroundColor: Colors.white,
-                  child: const Icon(Icons.landscape),
+                  child: const Icon(Icons.landscape_sharp),
+                  shape: CircleBorder(),
+                ),
+                const SizedBox(
+                  height: 5,
                 ),
                 FloatingActionButton(
-                  onPressed: _moveLocation,
-                  backgroundColor: Colors.amber,
-                  foregroundColor: Colors.white,
-                  child: const Icon(Icons.explore_rounded),
-                )
+                    onPressed: _moveLocation,
+                    backgroundColor: Colors.amber,
+                    foregroundColor: Colors.white,
+                    child: const Icon(Icons.explore_rounded),
+                    shape: CircleBorder())
               ],
             ))
       ],
