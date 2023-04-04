@@ -43,7 +43,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         bottomNavigationBar: NavigationBar(destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(icon: Icon(Icons.people), label: 'Neighbours'),
-          NavigationDestination(icon: Icon(Icons.message), label: 'My Socials'),
+          NavigationDestination(icon: Icon(Icons.message), label: 'DMs'),
         ], selectedIndex: _navIndexSelected, onDestinationSelected: _onPageChangedHandler),
       ),
       onWillPop: () async => false,
