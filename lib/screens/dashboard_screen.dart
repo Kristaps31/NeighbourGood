@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:neighbour_good/widgets/home_page.dart';
+import 'package:neighbour_good/widgets/map.dart';
 import 'package:neighbour_good/widgets/my_socials_page.dart';
 import 'package:neighbour_good/widgets/neighbours_page.dart';
 import 'package:neighbour_good/widgets/profile_menu_drawer.dart';
@@ -14,8 +15,8 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   late int _navIndexSelected;
 
-  List<Widget> pages = const [HomePage(), NeighboursPage(), MySocialsPage()];
-  List<String> titles = ["NeighbourGood", "Neighbours", "Messages"];
+  List<Widget> pages = const [HomePage(), NeighboursPage(), MySocialsPage(), MapSample()];
+  List<String> titles = ["NeighbourGood", "Neighbours", "Messages", "Map"];
 
   @override
   void initState() {
@@ -35,7 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(titles[_navIndexSelected]),
-          elevation: _navIndexSelected == 0 ? 0 : 2,
+          elevation: _navIndexSelected == 0 ? 0 : 3,
           automaticallyImplyLeading: false,
         ),
         endDrawer: const ProfileMenuDrawer(),
@@ -43,7 +44,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         bottomNavigationBar: NavigationBar(destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(icon: Icon(Icons.people), label: 'Neighbours'),
-          NavigationDestination(icon: Icon(Icons.message), label: 'DMs'),
+          NavigationDestination(icon: Icon(Icons.message), label: 'My Socials'),
+          NavigationDestination(icon: Icon(Icons.map), label: 'Map'),
         ], selectedIndex: _navIndexSelected, onDestinationSelected: _onPageChangedHandler),
       ),
       onWillPop: () async => false,
