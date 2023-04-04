@@ -15,12 +15,6 @@ class MapSampleState extends State<MapSample> {
   late GoogleMapController mapController;
   BitmapDescriptor customMarkerIcon = BitmapDescriptor.defaultMarker;
 
-  @override
-  void initState() {
-    addCustomIcon();
-    super.initState();
-  }
-
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
