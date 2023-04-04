@@ -16,9 +16,7 @@ class ChatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String chatPartnerId =
-        chat.sender1 == FirebaseAuth.instance.currentUser!.uid
-            ? chat.sender2
-            : chat.sender1;
+        chat.sender1 == FirebaseAuth.instance.currentUser!.uid ? chat.sender2 : chat.sender1;
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: Chat.getLastMessage(chat.id),
       builder: (context, snapshot) {
@@ -29,55 +27,55 @@ class ChatItem extends StatelessWidget {
           final docs = snapshot.data!.docs[0];
           final ChatMessage chatMessage = ChatMessage.fromFirestore(docs);
           return FutureBuilder<UserModel>(
-            future: UserModel.loadUserDetails(chatPartnerId),
-            builder: (context, snapshot) {
-              if(snapshot.hasData){
-                UserModel user = snapshot.data!;
-              return GestureDetector (
-                onTap:() {Navigator.of(context).push(CupertinoPageRoute(builder: (context) => ChatScreen(chat: chat)));},
-                child: Container(
-                  padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
-                  child: Row(
-                    children: <Widget>[
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(user.img),
-                        maxRadius: 30,
-                      ),
-                      SizedBox(
-                        width: 16,
-                      ),
-                      Expanded(
-                          child: Container(
-                        color: Colors.transparent,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              future: UserModel.loadUserDetails(chatPartnerId),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  UserModel user = snapshot.data!;
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(CupertinoPageRoute(builder: (context) => ChatScreen(chat: chat)));
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+                      child: Row(
+                        children: <Widget>[
+                          CircleAvatar(
+                            backgroundImage: NetworkImage(user.img),
+                            maxRadius: 30,
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Expanded(
+                              child: Container(
+                            color: Colors.transparent,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                              Text(user.name),
-                              Text(
-                                Jiffy(chatMessage.createdAt.toDate()).fromNow(),
-                                style: const TextStyle(
-                                    color: Color.fromARGB(255, 80, 80, 80),
+                                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                  Text(user.name),
+                                  Text(
+                                    Jiffy(chatMessage.createdAt.toDate()).fromNow(),
+                                    style: const TextStyle(
+                                      color: Color.fromARGB(255, 80, 80, 80),
                                     ),
-                              ),
-                            ]),
-                            Text(
-                              chatMessage.message,
-                              style: TextStyle(
-                                  fontSize: 14, color: Colors.grey.shade500),
+                                  ),
+                                ]),
+                                Text(
+                                  chatMessage.message,
+                                  style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ))
-                    ],
-                  ),
-                ),
-              );
-              }
-              return const Center(child: CircularProgressIndicator());
-            }
-          );
+                          ))
+                        ],
+                      ),
+                    ),
+                  );
+                }
+                return const Center(child: CircularProgressIndicator());
+              });
         }
         return const Center(child: CircularProgressIndicator());
       },

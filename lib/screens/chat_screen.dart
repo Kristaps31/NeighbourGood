@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +19,6 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final _messageController = TextEditingController();
-  final ScrollController _controller = ScrollController();
   bool _isSendButtonDisabled = true;
 
   @override
@@ -27,12 +28,16 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _sendMessage() {
+    final String myId = FirebaseAuth.instance.currentUser!.uid;
+
     ChatMessage message = ChatMessage(
         message: _messageController.text,
         id: "",
         createdAt: Timestamp.fromDate(DateTime.now()),
-        senderId: FirebaseAuth.instance.currentUser!.uid);
-        message.sendMessage(widget.chat.id).then((value) => {
+        senderId: myId);
+    widget.chat.createChatIfNotExist();
+
+    message.sendMessage(widget.chat.id).then((value) => {
           _messageController.clear(),
           FocusScope.of(context).unfocus(),
         });
@@ -48,111 +53,111 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Name"),
+        title: const Text("Private chat"),
       ),
-      body: Stack(
-        children: [
-          StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-            stream: widget.chat.getAllMessages(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-          return const Center(child: Text("Something went wrong"));
-        }
-              if(snapshot.hasData){
-                final docs = snapshot.data!.docs;
-                return Align(
-                  alignment: Alignment.bottomCenter,
-                  child: ListView.builder(
-                    controller: _controller,
-                  padding: EdgeInsets.only(bottom: 70),
-                  itemCount: docs.length,
-                  itemBuilder: (context, index) {
-                    final ChatMessage message = ChatMessage.fromFirestore(docs[index]);
-                    
-                    return FutureBuilder<UserModel>(
-                      future: UserModel.loadUserDetails(message.senderId),
-                      builder: (context, snapshot) {
-                        if(snapshot.hasData){
-                          final UserModel user = snapshot.data!;
-                          return ChatMessageBubble(chatMessage: message, user: user,);
-                        } return Container();
-                        
-                      }
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Stack(
+          children: [
+            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: widget.chat.getAllMessages(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(child: Text("Something went wrong"));
+                  }
+                  if (snapshot.hasData) {
+                    final docs = snapshot.data!.docs;
+                    return Align(
+                      alignment: Alignment.bottomCenter,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        reverse: true,
+                        padding: EdgeInsets.only(bottom: 70),
+                        itemCount: docs.length,
+                        itemBuilder: (context, index) {
+                          final ChatMessage message = ChatMessage.fromFirestore(docs[index]);
+
+                          return FutureBuilder<UserModel>(
+                              future: UserModel.loadUserDetails(message.senderId),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  final UserModel user = snapshot.data!;
+                                  return ChatMessageBubble(
+                                    chatMessage: message,
+                                    user: user,
+                                  );
+                                }
+                                return Container();
+                              });
+                        },
+                      ),
                     );
-                  },
-                              ),
-                );
-              }
-              return const Center(child: CircularProgressIndicator());
-            }
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                      width: 0.5, color: Theme.of(context).highlightColor),
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                }),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(width: 0.5, color: Theme.of(context).highlightColor),
+                  ),
+                  color: const Color.fromARGB(255, 255, 248, 248),
                 ),
-                color: const Color.fromARGB(255, 255, 248, 248),
+                child: Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 0, top: 5, bottom: 5),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: TextFormField(
+                          controller: _messageController,
+                          maxLines: 4,
+                          minLines: 1,
+                          decoration: InputDecoration(
+                            hintText: 'Type your comment...',
+                            hintStyle: const TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.w400, color: Colors.grey),
+                            contentPadding: const EdgeInsets.all(10),
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(24),
+                              borderSide: const BorderSide(
+                                width: 0.5, // Change this value to adjust the border width
+                                color: Color.fromARGB(255, 216, 216, 216),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(24),
+                              borderSide: BorderSide(
+                                width: 1, // Change this value to adjust the border width
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(24),
+                              borderSide: const BorderSide(
+                                width: 0.5, // Change this value to adjust the border width
+                                color: Color.fromARGB(255, 216, 216, 216),
+                              ),
+                            ),
+                          ),
+                        )),
+                        TextButton(
+                            onPressed: _isSendButtonDisabled
+                                ? null
+                                : () {
+                                    _sendMessage();
+                                  },
+                            child: const Icon(Icons.send))
+                      ],
+                    )),
               ),
-              child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 10, right: 0, top: 5, bottom: 5),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: TextFormField(
-                        controller: _messageController,
-                        maxLines: 4,
-                        minLines: 1,
-                        decoration: InputDecoration(
-                          hintText: 'Type your comment...',
-                          hintStyle: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.grey),
-                          contentPadding: const EdgeInsets.all(10),
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: const BorderSide(
-                              width:
-                                  0.5, // Change this value to adjust the border width
-                              color: Color.fromARGB(255, 216, 216, 216),
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide(
-                              width:
-                                  1, // Change this value to adjust the border width
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: const BorderSide(
-                              width:
-                                  0.5, // Change this value to adjust the border width
-                              color: Color.fromARGB(255, 216, 216, 216),
-                            ),
-                          ),
-                        ),
-                      )),
-                      TextButton(
-                          onPressed: _isSendButtonDisabled
-                              ? null
-                              : () {
-                                  _sendMessage();
-                                },
-                          child: const Icon(Icons.send))
-                    ],
-                  )),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

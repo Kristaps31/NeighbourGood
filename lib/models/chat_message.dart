@@ -5,12 +5,14 @@ class ChatMessage {
   final String id;
   final Timestamp createdAt;
   final String senderId;
+  final String neighbourId;
 
   ChatMessage({
     required this.message,
     required this.id,
     required this.createdAt,
     required this.senderId,
+    this.neighbourId = '',
   });
 
   factory ChatMessage.fromFirestore(DocumentSnapshot doc) {
@@ -28,9 +30,7 @@ class ChatMessage {
         'message': message.trim(),
       };
 
-      
-  Future<DocumentReference<Map<String, dynamic>>> sendMessage(
-      String chatId) async {
+  Future<DocumentReference<Map<String, dynamic>>> sendMessage(String chatId) async {
     return FirebaseFirestore.instance
         .collection('chats')
         .doc(chatId)
