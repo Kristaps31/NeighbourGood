@@ -74,7 +74,7 @@ class ChatItem extends StatelessWidget {
                     ),
                   );
                 }
-                return const Center(child: CircularProgressIndicator());
+                return Container();
               });
         }
         return const Center(child: CircularProgressIndicator());
