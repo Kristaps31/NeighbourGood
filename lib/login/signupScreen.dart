@@ -76,7 +76,8 @@ class _SignupScreenState extends State<SignupScreen> {
             .set({
           'name': _name.text,
           'created_at': user?.metadata.creationTime,
-          'street': location,
+          'street': _street.text,
+          'location': location,
           'dob': _dob.text,
           'img':
               'https://firebasestorage.googleapis.com/v0/b/neighbour-good.appspot.com/o/blank-profile-picture-g0d85654dd_640.png?alt=media&token=047c8e21-f734-466a-bcc1-9debedb1eab3'
@@ -138,7 +139,6 @@ class _SignupScreenState extends State<SignupScreen> {
                     TextFormField(
                       validator: validateStreet,
                       controller: _street,
-                      // initialValue: 'tope',
                       decoration: const InputDecoration(
                           hintText: 'Enter your Street address',
                           icon: Icon(Icons.home)),
@@ -155,8 +155,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                           await locationFromAddress(
                                               _placeList[index]['description']);
                                       location = [
-                                        'Latitude - ${getlocation.last.latitude}',
-                                        'Longitute - ${getlocation.last.longitude}'
+                                        getlocation.last.latitude,
+                                        getlocation.last.longitude
                                       ];
 
                                       setState(() {
