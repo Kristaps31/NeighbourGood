@@ -36,9 +36,7 @@ class MapSampleState extends State<MapSample> {
             final profile = snapshot.data()!['name'];
             final aboutMe = snapshot.data()!['about_me'];
             mapController.animateCamera(CameraUpdate.newLatLngZoom(
-                LatLng(snapshot.data()!['location'][0],
-                    snapshot.data()!['location'][1]),
-                15));
+                LatLng(snapshot.data()!['location'][0], snapshot.data()!['location'][1]), 15));
             _addMarker(lat, lon, profile, aboutMe);
           }
         },
@@ -53,10 +51,15 @@ class MapSampleState extends State<MapSample> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    mapController.dispose();
+    super.dispose();
+  }
+
   MapType _currentMapType = MapType.normal;
 
-  final CameraPosition _defaultLocation =
-      CameraPosition(target: LatLng(1, 1), zoom: 10);
+  final CameraPosition _defaultLocation = CameraPosition(target: LatLng(1, 1), zoom: 10);
   final Set<Marker> _markers = {};
 
   void _addMarker(double lat, double lon, String profile, String aboutMe) {
@@ -79,8 +82,7 @@ class MapSampleState extends State<MapSample> {
 
   void _changeMapType() {
     setState(() {
-      _currentMapType =
-          _currentMapType == MapType.normal ? MapType.hybrid : MapType.normal;
+      _currentMapType = _currentMapType == MapType.normal ? MapType.hybrid : MapType.normal;
     });
   }
 

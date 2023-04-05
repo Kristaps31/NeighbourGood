@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:neighbour_good/screens/user_screen.dart';
-
-import '../models/user.dart';
+import 'package:neighbour_good/widgets/map.dart';
+import 'package:neighbour_good/widgets/neighbours_list.dart';
 
 class NeighboursPage extends StatefulWidget {
   const NeighboursPage({Key? key}) : super(key: key);
@@ -13,40 +11,39 @@ class NeighboursPage extends StatefulWidget {
 
 class _NeighboursPageState extends State<NeighboursPage> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        future: FirebaseFirestore.instance.collection("profiles").get(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) return Text('Error = ${snapshot.error}');
-
-          if (snapshot.hasData) {
-            final docs = snapshot.data!.docs;
-
-            return ListView.builder(
-                itemCount: docs.length,
-                itemBuilder: (context, index) {
-                  final data = docs[index];
-                  UserModel user = UserModel.fromFirestore(data);
-                  debugPrint(user.toString());
-                  return ListTile(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => UserScreen(
-                                      user: user
-                                      )));
-                    },
-                    title: Text(user.name),
-                  );
-                });
-          }
-          return const Center(child: CircularProgressIndicator());
-        });
+    return Stack(
+      children: [
+        DefaultTabController(
+          length: 2,
+          initialIndex: 0,
+          child: Scaffold(
+            appBar: AppBar(
+              title: null,
+              bottom: PreferredSize(
+                preferredSize: const Size(double.infinity, -18),
+                child: TabBar(
+                  labelColor: Theme.of(context).primaryColor,
+                  unselectedLabelColor: const Color.fromARGB(255, 130, 130, 130),
+                  tabs: const [
+                    Padding(padding: EdgeInsets.only(top: 6, bottom: 6), child: Text('List')),
+                    Padding(padding: EdgeInsets.only(top: 6, bottom: 6), child: Text('Map')),
+                  ],
+                ),
+              ),
+            ),
+            body: const TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                // pages
+                NeighboursList(),
+                MapSample(),
+              ],
+            ),
+          ),
+        ),
+        //
+      ],
+    );
   }
 }
