@@ -24,6 +24,9 @@ class ChatItem extends StatelessWidget {
           return const Center(child: Text("Something went wrong"));
         }
         if (snapshot.hasData) {
+          if (snapshot.data!.docs.isEmpty) {
+            return Container();
+          }
           final docs = snapshot.data!.docs[0];
           final ChatMessage chatMessage = ChatMessage.fromFirestore(docs);
           return FutureBuilder<UserModel>(
