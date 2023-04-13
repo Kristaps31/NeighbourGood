@@ -8,11 +8,11 @@ Developed in just 1.5 weeks by a passionate team of four - [Sam](https://github.
 
 ## Showcase
 
+Watch our showcase:
+
+[![Video Thumbnail](https://i.ibb.co/Rv0ptMD/6438478d3e8d5-fbutube-Neighbour-Good-Thumbnail.png)](https://www.youtube.com/watch?v=3MB573PKkI4)
+
 Link: https://www.youtube.com/watch?v=3MB573PKkI4
-
-
-[![Video Thumbnail](https://i.ibb.co/jMK3ztJ/Neighbour-Good-Thumbnail.png)](https://www.youtube.com/watch?v=3MB573PKkI4)
-
 
 ## Major Achievements
 
