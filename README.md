@@ -10,7 +10,8 @@ Developed in just 1.5 weeks by a passionate team of four - [Sam](https://github.
 
 Link: https://www.youtube.com/watch?v=3MB573PKkI4
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/3MB573PKkI4" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+[![Video Thumbnail](https://i.ibb.co/jMK3ztJ/Neighbour-Good-Thumbnail.png)](https://www.youtube.com/watch?v=3MB573PKkI4)
 
 
 ## Major Achievements
