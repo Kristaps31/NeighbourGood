@@ -2,7 +2,7 @@
 
 Welcome to our [Northcoders Coding Bootcamp](https://northcoders.com/our-courses/coding-bootcamp) Final Group Project, NeighbourGood!
 
-NeighbourGood is a powerful community-driven app designed to strengthen neighbourhoods by connecting neighbours, where they can engage in conversations, request or offer help, such as DIY, do the shopping, walk a dog etc.
+NeighbourGood is a powerful community-driven app designed to strengthen neighbourhoods by connecting neighbours, where they can engage in conversations, request or offer help, such as DIY, do the shopping, dog walking etc.
 
 Developed in just 1.5 weeks by a passionate team of four - [Sam](https://github.com/samelawton), [Nikita](https://github.com/LendiDev), [Tope](https://github.com/Topecoding206) and [Kristaps](https://github.com/Kristaps31).
 
